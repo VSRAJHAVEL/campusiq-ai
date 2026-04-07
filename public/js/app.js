@@ -73,7 +73,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#logout-btn').click(function(e) {
+  $('#logout-btn, .logout-action').click(function(e) {
     e.preventDefault();
     localStorage.removeItem('campusiq_token');
     window.location.href = '/';
