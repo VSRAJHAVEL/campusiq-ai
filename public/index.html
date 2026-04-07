@@ -9,12 +9,12 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   
   <!-- Styles -->
   <link rel="stylesheet" href="/css/style.css">
   
-  <!-- jQuery -->
+  <!-- jQuery FIRST -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
@@ -23,14 +23,23 @@
   <nav>
     <div class="nav-container">
       <a href="/" class="logo">
-        <span style="color: #fff; font-weight: 400; margin-right: 8px;">C I Q</span>
+        <span style="color: #fff; font-weight: 400; margin-right: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">C I Q</span>
         CampusIQ
       </a>
       <div class="nav-links">
         <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
         <a href="/explore">Explore</a>
-        <a href="/dashboard" class="btn btn-outline" style="padding: 0.5rem 1rem;">Sign In</a>
+
+        <!-- Shown when NOT logged in -->
+        <a href="#" id="nav-signin-btn" class="btn btn-outline" style="padding: 0.5rem 1.2rem;">Sign In</a>
+        <a href="#" id="nav-register-btn" class="btn btn-primary" style="padding: 0.5rem 1.2rem;">Register</a>
+
+        <!-- Shown when logged in -->
+        <div id="nav-logged-in" style="display:none; align-items:center; gap:1.5rem;">
+          <a href="/dashboard" style="color: var(--accent-primary);">Dashboard</a>
+          <a href="#" class="logout-action" style="color: var(--text-muted);">Sign Out</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -39,12 +48,13 @@
   <section class="hero">
     <canvas id="neural-canvas"></canvas>
     <div class="hero-content">
-      <h1 class="hero-title">Your <span class="text-gradient">AI-Powered</span> Campus & Career Guide</h1>
-      <p class="hero-subtitle">CampusIQ learns your unique skills, interests, and behavior to recommend the best clubs, courses, events, and projects.</p>
+      <div style="font-family: 'Montserrat', sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent-primary); margin-bottom: 1.5rem;">AI-POWERED CAMPUS INTELLIGENCE</div>
+      <h1 class="hero-title">Your <span class="text-gradient">AI-Powered</span><br>Campus & Career Guide</h1>
+      <p class="hero-subtitle">CampusIQ learns your unique skills, interests, and behavior to recommend the best clubs, courses, events, and career paths — tailored just for you.</p>
       
-      <div style="display: flex; gap: 1rem; justify-content: center;">
-        <a href="/explore" class="btn btn-primary">Start Exploring</a>
-        <a href="/dashboard" class="btn btn-outline">View Your DNA</a>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/explore" class="btn btn-primary" id="hero-explore-btn">Start Exploring</a>
+        <a href="#" class="btn btn-outline open-login-btn" id="hero-signin-btn">View Your Dashboard</a>
       </div>
 
       <div class="hero-stats">
@@ -64,6 +74,33 @@
     </div>
   </section>
 
+  <!-- How It Works -->
+  <section id="how-it-works" style="padding: 8rem 2rem; background: #000; border-top: 1px solid rgba(197,160,89,0.1); border-bottom: 1px solid rgba(197,160,89,0.1);">
+    <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+      <div class="section-header">
+        <h2 class="section-title">How <span class="text-gradient">It Works</span></h2>
+        <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto;">Three steps to your personalized AI-powered campus experience.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 3rem; margin-top: 4rem; text-align: left;">
+        <div style="padding: 2rem; border-left: 2px solid rgba(197,160,89,0.3);">
+          <div style="font-family: 'Playfair Display', serif; font-size: 3rem; color: rgba(197,160,89,0.3); margin-bottom: 1rem;">01</div>
+          <h3 style="margin-bottom: 1rem; color: #fff;">Create Your Profile</h3>
+          <p style="color: var(--text-muted); line-height: 1.8;">Register in 30 seconds. Tell us your major, year, and career goal. CampusIQ builds your initial Learning DNA.</p>
+        </div>
+        <div style="padding: 2rem; border-left: 2px solid rgba(197,160,89,0.3);">
+          <div style="font-family: 'Playfair Display', serif; font-size: 3rem; color: rgba(197,160,89,0.3); margin-bottom: 1rem;">02</div>
+          <h3 style="margin-bottom: 1rem; color: #fff;">Explore & Interact</h3>
+          <p style="color: var(--text-muted); line-height: 1.8;">Browse courses, clubs, products, and events. Every click, view, and enrollment is analyzed by our AI engine.</p>
+        </div>
+        <div style="padding: 2rem; border-left: 2px solid rgba(197,160,89,0.3);">
+          <div style="font-family: 'Playfair Display', serif; font-size: 3rem; color: rgba(197,160,89,0.3); margin-bottom: 1rem;">03</div>
+          <h3 style="margin-bottom: 1rem; color: #fff;">Get Recommendations</h3>
+          <p style="color: var(--text-muted); line-height: 1.8;">Your dashboard shows hyper-personalized recommendations from two AI brains — Campus and Career — that evolve in real time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Features Section -->
   <section id="features" class="features-section">
     <div class="section-header">
@@ -74,15 +111,15 @@
     <div class="features-grid">
       <!-- Campus Brain -->
       <div class="feature-card">
-        <div class="feature-icon" style="font-family: var(--font-serif); font-size: 1.2rem; color: var(--accent-primary);">I.</div>
+        <div class="feature-icon" style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--accent-primary);">I.</div>
         <h3 class="feature-title">The Campus Brain</h3>
-        <p class="feature-desc">Recommends the right clubs to join, study spots based on noise preferences, events you'll love, and matching study groups.</p>
+        <p class="feature-desc">Recommends the right clubs to join, events you'll love, and study groups that match your pace and personality.</p>
         <a href="/explore" class="text-gradient" style="font-weight: 600; margin-top: auto;">Explore Campus Life →</a>
       </div>
 
       <!-- Career Brain -->
       <div class="feature-card">
-        <div class="feature-icon" style="font-family: var(--font-serif); font-size: 1.2rem; color: var(--accent-primary);">II.</div>
+        <div class="feature-icon" style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--accent-primary);">II.</div>
         <h3 class="feature-title">The Career Brain</h3>
         <p class="feature-desc">Analyzes your skill gaps against the job market. Recommends courses, tools, and projects to boost your employability.</p>
         <a href="/explore" class="text-gradient" style="font-weight: 600; margin-top: auto;">Explore Career Paths →</a>
@@ -90,10 +127,22 @@
 
       <!-- Learning DNA -->
       <div class="feature-card">
-        <div class="feature-icon" style="font-family: var(--font-serif); font-size: 1.2rem; color: var(--accent-primary);">III.</div>
+        <div class="feature-icon" style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--accent-primary);">III.</div>
         <h3 class="feature-title">Learning DNA</h3>
         <p class="feature-desc">A visual constellation of your 8-dimensional learning personality that evolves as you interact with the platform.</p>
-        <a href="/dashboard" class="text-gradient" style="font-weight: 600; margin-top: auto;">View Dashboard →</a>
+        <a href="#" class="text-gradient open-login-btn" style="font-weight: 600; margin-top: auto;">View Dashboard →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section style="padding:8rem 2rem; text-align:center; background: radial-gradient(ellipse at center, rgba(197,160,89,0.05) 0%, transparent 70%);">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <h2 class="section-title" style="margin-bottom:1.5rem;">Ready to <span class="text-gradient">Level Up?</span></h2>
+      <p style="color:var(--text-muted);margin-bottom:3rem;line-height:1.8;">Join CampusIQ and let AI guide your academic and professional journey. It's free to get started.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="#" class="btn btn-primary open-register-btn" style="font-size:1rem;padding:1rem 2.5rem;">Create Free Account</a>
+        <a href="/explore" class="btn btn-outline" style="font-size:1rem;padding:1rem 2.5rem;">Browse Content</a>
       </div>
     </div>
   </section>
@@ -104,10 +153,11 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="/js/app.js"></script>
   <script>
-    // ═══════════════════════════════════════════════
-    // NEURAL BACKGROUND ANIMATION (Canvas & Vanilla JS)
-    // ═══════════════════════════════════════════════
+    // ═══════════════════════════════════════════
+    // NEURAL BACKGROUND ANIMATION
+    // ═══════════════════════════════════════════
     $(document).ready(function() {
       const canvas = document.getElementById('neural-canvas');
       const ctx = canvas.getContext('2d');
@@ -115,10 +165,9 @@
       let width, height;
       let particles = [];
       
-      // Configuration
-      const particleCount = 80;
-      const connectionDistance = 150;
-      const particleSpeed = 0.5;
+      const particleCount = 70;
+      const connectionDistance = 140;
+      const particleSpeed = 0.4;
       
       function resize() {
         width = window.innerWidth;
@@ -130,68 +179,51 @@
       window.addEventListener('resize', resize);
       resize();
       
-      // Particle Class
       class Particle {
         constructor() {
           this.x = Math.random() * width;
           this.y = Math.random() * height;
           this.vx = (Math.random() - 0.5) * particleSpeed;
           this.vy = (Math.random() - 0.5) * particleSpeed;
-          this.radius = Math.random() * 2 + 1;
+          this.radius = Math.random() * 1.5 + 0.5;
         }
         
         update() {
           this.x += this.vx;
           this.y += this.vy;
-          
-          if (this.x < 0 || this.x > width) this.vx *= -1;
+          if (this.x < 0 || this.x > width)  this.vx *= -1;
           if (this.y < 0 || this.y > height) this.vy *= -1;
         }
         
         draw() {
           ctx.beginPath();
           ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(59, 130, 246, 0.5)'; // Primary accent
+          ctx.fillStyle = 'rgba(197, 160, 89, 0.6)';
           ctx.fill();
         }
       }
       
-      // Initialize particles
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
+      for (let i = 0; i < particleCount; i++) particles.push(new Particle());
       
-      // Mouse interaction
       let mouse = { x: null, y: null };
+      $(window).on('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+      $(window).on('mouseout',  () => { mouse.x = null; mouse.y = null; });
       
-      $(window).on('mousemove', function(e) {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-      });
-      
-      $(window).on('mouseout', function() {
-        mouse.x = null;
-        mouse.y = null;
-      });
-      
-      // Animation Loop
       function animate() {
         ctx.clearRect(0, 0, width, height);
         
-        // Update and draw particles
         for (let i = 0; i < particles.length; i++) {
           particles[i].update();
           particles[i].draw();
           
-          // Connect particles
-          for (let j = i; j < particles.length; j++) {
+          for (let j = i + 1; j < particles.length; j++) {
             const dx = particles[i].x - particles[j].x;
             const dy = particles[i].y - particles[j].y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const dist = Math.sqrt(dx*dx + dy*dy);
             
-            if (distance < connectionDistance) {
+            if (dist < connectionDistance) {
               ctx.beginPath();
-              ctx.strokeStyle = `rgba(139, 92, 246, ${1 - distance / connectionDistance})`; // Secondary accent
+              ctx.strokeStyle = `rgba(197, 160, 89, ${0.15 * (1 - dist/connectionDistance)})`;
               ctx.lineWidth = 1;
               ctx.moveTo(particles[i].x, particles[i].y);
               ctx.lineTo(particles[j].x, particles[j].y);
@@ -199,16 +231,15 @@
             }
           }
           
-          // Connect to mouse
           if (mouse.x && mouse.y) {
             const dx = particles[i].x - mouse.x;
             const dy = particles[i].y - mouse.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const dist = Math.sqrt(dx*dx + dy*dy);
             
-            if (distance < connectionDistance * 1.5) {
+            if (dist < connectionDistance * 1.5) {
               ctx.beginPath();
-              ctx.strokeStyle = `rgba(59, 130, 246, ${1 - distance / (connectionDistance * 1.5)})`;
-              ctx.lineWidth = 2;
+              ctx.strokeStyle = `rgba(197, 160, 89, ${0.3 * (1 - dist/(connectionDistance*1.5))})`;
+              ctx.lineWidth = 1.5;
               ctx.moveTo(particles[i].x, particles[i].y);
               ctx.lineTo(mouse.x, mouse.y);
               ctx.stroke();
@@ -220,6 +251,16 @@
       }
       
       animate();
+
+      // Hero Dashboard button — go to dashboard if logged in, else open auth
+      $('#hero-signin-btn').click(function(e) {
+        e.preventDefault();
+        if (localStorage.getItem('campusiq_token')) {
+          window.location.href = '/dashboard';
+        } else {
+          openAuthModal('login');
+        }
+      });
     });
   </script>
   <script src="/js/chatbot.js"></script>

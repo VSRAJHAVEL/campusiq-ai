@@ -7,28 +7,27 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="/css/style.css">
   
-  <script>
-    if (!localStorage.getItem('campusiq_token')) {
-      window.location.href = '/dashboard';
-    }
-  </script>
+  <!-- jQuery MUST load first -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   
   <style>
     .explore-container {
       max-width: 1200px;
-      margin: 100px auto 40px;
+      margin: 90px auto 60px;
       padding: 0 2rem;
     }
     
     .explore-header {
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
       text-align: center;
+      padding-top: 2rem;
     }
     
+    /* Search */
     .search-bar {
       width: 100%;
       max-width: 600px;
@@ -39,44 +38,52 @@
     .search-input {
       width: 100%;
       padding: 1rem 1.5rem;
-      border-radius: 99px;
-      border: 1px solid var(--glass-border);
-      background: var(--bg-card);
+      border: 1px solid rgba(197,160,89,0.3);
+      background: rgba(10,10,10,0.9);
       color: white;
-      font-size: 1.1rem;
-      backdrop-filter: blur(10px);
-      transition: all var(--trans-fast);
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.2s;
+      outline: none;
     }
     
     .search-input:focus {
-      outline: none;
       border-color: var(--accent-primary);
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 0 20px rgba(197,160,89,0.15);
     }
     
+    .search-input::placeholder { color: #555; }
+
+    /* Filter Pills */
     .filter-pills {
       display: flex;
-      gap: 1rem;
+      gap: 0.8rem;
       justify-content: center;
       flex-wrap: wrap;
       margin-bottom: 3rem;
     }
     
     .pill {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(197,160,89,0.2);
       padding: 0.5rem 1.2rem;
-      border-radius: 99px;
       cursor: pointer;
-      transition: all var(--trans-fast);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+      transition: all 0.2s;
     }
     
     .pill.active, .pill:hover {
       background: var(--accent-primary);
-      color: white;
+      color: #000;
       border-color: var(--accent-primary);
+      font-weight: 600;
     }
     
+    /* Items Grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -85,27 +92,31 @@
     
     .card {
       background: var(--bg-card);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
+      border: 1px solid rgba(197,160,89,0.15);
       overflow: hidden;
-      transition: all var(--trans-fast);
+      transition: all 0.25s;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
     }
     
     .card:hover {
       transform: translateY(-5px);
       border-color: var(--accent-primary);
-      box-shadow: var(--glass-shadow);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     }
     
     .card-img-placeholder {
-      height: 140px;
-      background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2));
+      height: 120px;
+      background: linear-gradient(135deg, rgba(197,160,89,0.1), rgba(212,175,55,0.05));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: rgba(197,160,89,0.6);
+      letter-spacing: 0.2em;
+      border-bottom: 1px solid rgba(197,160,89,0.1);
     }
     
     .card-body {
@@ -116,24 +127,27 @@
     }
     
     .card-tag {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.1em;
       color: var(--accent-primary);
       margin-bottom: 0.5rem;
       font-weight: 700;
     }
     
     .card-title {
-      font-size: 1.2rem;
+      font-size: 1.05rem;
       margin-bottom: 0.5rem;
+      color: #f5f5f5;
+      font-family: 'Playfair Display', serif;
+      line-height: 1.3;
     }
     
     .card-desc {
       color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-      line-height: 1.4;
+      font-size: 0.85rem;
+      margin-bottom: 1.2rem;
+      line-height: 1.6;
       flex: 1;
     }
     
@@ -142,48 +156,138 @@
       justify-content: space-between;
       align-items: center;
       padding-top: 1rem;
-      border-top: 1px solid var(--glass-border);
+      border-top: 1px solid rgba(197,160,89,0.1);
     }
     
     .btn-small {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.85rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.75rem;
     }
-    
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-      z-index: 1000; display: none; align-items: center; justify-content: center;
-    }
-    .modal-content {
-      background: var(--bg-card); border: 1px solid var(--accent-primary);
-      padding: 2.5rem; border-radius: 4px; max-width: 600px; width: 90%;
-      position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-    }
-    .modal-close {
-      position: absolute; top: 1rem; right: 1.5rem;
-      cursor: pointer; color: var(--text-muted); font-size: 1.5rem;
-    }
-    .modal-close:hover { color: #fff; }
-    .modal-meta { color: var(--accent-primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
-    .modal-title { font-family: var(--font-serif); font-size: 2rem; color: #fff; margin-bottom: 1.5rem; }
-    .modal-desc { color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem; max-height: 300px; overflow-y: auto;}
-  </style>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #0d0d0d;
+      border: 1px solid var(--accent-primary);
+      padding: 3rem;
+      max-width: 600px;
+      width: 92%;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      background: none;
+      border: none;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: #fff; }
+
+    .modal-meta {
+      color: var(--accent-primary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .modal-desc {
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    /* Empty / Error States */
+    .state-empty {
+      text-align: center;
+      padding: 5rem 2rem;
+      grid-column: 1 / -1;
+      color: var(--text-muted);
+    }
+
+    .state-empty h3 {
+      font-family: 'Playfair Display', serif;
+      color: rgba(197,160,89,0.4);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Sort bar */
+    .sort-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .sort-bar select {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(197,160,89,0.25);
+      color: #888;
+      padding: 0.5rem 1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      outline: none;
+    }
+    .sort-bar select option { background: #111; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  </style>
 </head>
 <body>
 
+  <!-- Navigation -->
   <nav>
     <div class="nav-container">
       <a href="/" class="logo">
-        <span style="color: #fff; font-weight: 400; margin-right: 8px;">C I Q</span>
+        <span style="color:#fff;font-weight:400;margin-right:8px;font-family:'Montserrat',sans-serif;font-size:0.9rem;">C I Q</span>
         CampusIQ
       </a>
       <div class="nav-links">
-        <a href="/explore" class="active">Explore</a>
+        <a href="/explore" style="color: var(--accent-primary);">Explore</a>
         <a href="/dashboard">Dashboard</a>
-        <a href="#" class="logout-action" style="color: var(--accent-primary);">Logout</a>
+
+        <!-- Not logged in -->
+        <a href="#" id="nav-signin-btn" class="btn btn-outline" style="padding:0.5rem 1.2rem;">Sign In</a>
+        <a href="#" id="nav-register-btn" class="btn btn-primary" style="padding:0.5rem 1.2rem;">Register</a>
+
+        <!-- Logged in -->
+        <div id="nav-logged-in" style="display:none;align-items:center;gap:1.5rem;">
+          <a href="#" class="logout-action" style="color:var(--text-muted);font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;">Sign Out</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -191,143 +295,262 @@
   <div class="explore-container">
     <div class="explore-header">
       <h1 class="section-title">Explore <span class="text-gradient">CampusIQ</span></h1>
-      <p style="color: var(--text-muted);">Discover courses, products, clubs, and events to enrich your journey.</p>
+      <p style="color: var(--text-muted); font-size:0.9rem;">Discover courses, products, clubs, and events to enrich your journey.</p>
     </div>
 
     <!-- Search -->
     <div class="search-bar">
-      <input type="text" id="search-input" class="search-input" placeholder="Search for 'Python', 'Machine Learning', 'Hackathon'...">
+      <input type="text" id="search-input" class="search-input" placeholder="Search 'Python', 'Machine Learning', 'Hackathon'...">
     </div>
 
     <!-- Filters -->
     <div class="filter-pills">
-      <div class="pill active" data-filter="all">All Items</div>
-      <div class="pill" data-filter="course">Courses</div>
-      <div class="pill" data-filter="product">Products</div>
-      <div class="pill" data-filter="club">Clubs</div>
-      <div class="pill" data-filter="event">Events</div>
+      <div class="pill active" data-filter="all" id="pill-all">All Items</div>
+      <div class="pill" data-filter="course" id="pill-course">Courses</div>
+      <div class="pill" data-filter="product" id="pill-product">Products</div>
+      <div class="pill" data-filter="club" id="pill-club">Clubs</div>
+      <div class="pill" data-filter="event" id="pill-event">Events</div>
     </div>
 
-    <!-- Items Grid -->
-    <div id="loading" style="text-align: center; padding: 4rem;">
-      <div style="font-size: 1.5rem; animation: pulse 1.5s infinite; font-family: var(--font-serif); color: var(--accent-primary);">Fetching Archives...</div>
+    <!-- Sort + Count Bar -->
+    <div class="sort-bar" id="sort-bar" style="display:none;">
+      <span id="result-count" style="color:#888;font-size:0.8rem;letter-spacing:0.05em;"></span>
+      <select id="sort-select">
+        <option value="">Sort: Trending</option>
+        <option value="rating">Sort: Top Rated</option>
+        <option value="price-asc">Sort: Price ↑</option>
+        <option value="price-desc">Sort: Price ↓</option>
+        <option value="alpha">Sort: A–Z</option>
+      </select>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" style="text-align:center;padding:6rem 2rem;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;animation:pulse 1.5s infinite;color:var(--accent-primary);">Fetching Archives...</div>
+      <p style="color:var(--text-muted);margin-top:1rem;font-size:0.85rem;">Querying the knowledge base</p>
     </div>
     
-    <div class="grid" id="explore-grid" style="display: none;"></div>
+    <div class="grid" id="explore-grid" style="display:none;"></div>
   </div>
 
   <!-- Details Modal -->
   <div id="details-modal" class="modal-overlay">
     <div class="modal-content">
-      <div class="modal-close" onclick="$('#details-modal').fadeOut()">✕</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
       <div class="modal-meta" id="modal-meta">CATEGORY</div>
       <h2 class="modal-title" id="modal-title">Item Title</h2>
+      <div id="modal-extra" style="margin-bottom:1rem;"></div>
       <p class="modal-desc" id="modal-desc">Description</p>
-      <button class="btn btn-primary" id="modal-action-btn" style="width: 100%;">Enroll / Join</button>
+      <button class="btn btn-primary" id="modal-action-btn" style="width:100%;">Enroll / Join</button>
+      <div id="modal-logged-prompt" style="display:none;margin-top:1rem;text-align:center;font-size:0.82rem;color:#888;">
+        <a href="#" class="open-login-btn" style="color:var(--accent-primary);">Sign in</a> to save this to your profile and get personalized AI insights.
+      </div>
     </div>
   </div>
 
   <script src="/js/app.js"></script>
   <script>
     $(document).ready(function() {
-      // Setup specific to explore page
+
+      // Auth check — handled gracefully (not before jQuery)
+      if (!localStorage.getItem('campusiq_token')) {
+        // Not logged in — still show the page but in "browse" mode
+        // Show login prompt on enroll actions
+        $('#nav-signin-btn, #nav-register-btn').show();
+        $('#nav-logged-in').hide();
+        $('#modal-logged-prompt').show();
+      }
+
+      // Fetch with initial filter
+      let currentFilter = 'all';
+      let currentSort   = '';
+      let allFetched    = [];
+
       fetchExploreData('all');
-      
+
       // Filter clicks
       $('.pill').click(function() {
         $('.pill').removeClass('active');
         $(this).addClass('active');
-        const filter = $(this).data('filter');
-        fetchExploreData(filter);
+        currentFilter = $(this).data('filter');
+        fetchExploreData(currentFilter);
       });
       
-      // Basic Search filter
-      $('#search-input').on('keyup', function() {
-        const query = $(this).val().toLowerCase();
-        $('.card').each(function() {
-          const title = $(this).find('.card-title').text().toLowerCase();
-          const desc = $(this).find('.card-desc').text().toLowerCase();
-          if (title.includes(query) || desc.includes(query)) {
-            $(this).show();
-          } else {
-            $(this).hide();
+      // Sort change
+      $('#sort-select').change(function() {
+        currentSort = $(this).val();
+        applySort();
+        renderExploreGrid(allFetched);
+      });
+
+      // Live Search filter (client-side)
+      let searchTimeout;
+      $('#search-input').on('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          const query = $(this).val().toLowerCase().trim();
+          if (!query) {
+            $('.card').show();
+            updateCount();
+            return;
           }
-        });
+          let visible = 0;
+          $('.card').each(function() {
+            const title = $(this).find('.card-title').text().toLowerCase();
+            const desc  = $(this).find('.card-desc').text().toLowerCase();
+            const tag   = $(this).find('.card-tag').text().toLowerCase();
+            if (title.includes(query) || desc.includes(query) || tag.includes(query)) {
+              $(this).show();
+              visible++;
+            } else {
+              $(this).hide();
+            }
+          });
+          $('#result-count').text(`${visible} results for "${query}"`);
+        }, 200);
       });
     });
-    
+
+    function closeModal() {
+      $('#details-modal').fadeOut(200);
+    }
+
+    // Close modal on outside click
+    $('#details-modal').click(function(e) {
+      if ($(e.target).is('#details-modal')) closeModal();
+    });
+
     async function fetchExploreData(type) {
       $('#loading').show();
       $('#explore-grid').hide();
+      $('#sort-bar').hide();
       
+      allFetched = [];
+
       try {
-        let allItems = [];
-        
         if (type === 'all' || type === 'course' || type === 'product') {
           let url = '/api/courses';
-          if (type === 'course' || type === 'product') url += `?type=${type}`;
-          const res = await fetch(url);
-          const { data } = await res.json();
-          allItems = allItems.concat(data.map(item => ({...item, dbType: item.type})));
+          if (type === 'course')  url += '?type=course';
+          if (type === 'product') url += '?type=product';
+          
+          const res  = await fetch(url);
+          if (res.ok) {
+            const { data } = await res.json();
+            allFetched = allFetched.concat((data || []).map(item => ({ ...item, dbType: item.type })));
+          }
         }
         
         if (type === 'all' || type === 'club') {
           const res = await fetch('/api/clubs');
-          const { data } = await res.json();
-          allItems = allItems.concat(data.map(item => ({...item, dbType: 'club'})));
+          if (res.ok) {
+            const { data } = await res.json();
+            allFetched = allFetched.concat((data || []).map(item => ({ ...item, dbType: 'club' })));
+          }
         }
         
         if (type === 'all' || type === 'event') {
           const res = await fetch('/api/events');
-          const { data } = await res.json();
-          allItems = allItems.concat(data.map(item => ({...item, dbType: 'event'})));
+          if (res.ok) {
+            const { data } = await res.json();
+            allFetched = allFetched.concat((data || []).map(item => ({ ...item, dbType: 'event' })));
+          }
         }
-        
-        // Shuffle array slightly for mix
-        allItems.sort(() => Math.random() - 0.5);
-        
-        renderExploreGrid(allItems);
+
+        // Default: shuffle slightly
+        allFetched.sort(() => Math.random() - 0.45);
+
+        applySort();
+        renderExploreGrid(allFetched);
+
       } catch (err) {
         console.error(err);
-        $('#explore-grid').html('<p style="text-align:center;width:100%;">Failed to load data. Ensure backend is running.</p>');
+        $('#explore-grid').html('<div class="state-empty"><h3>Connection Error</h3><p>Could not reach the server. Please ensure the backend is running.</p></div>');
       } finally {
         $('#loading').hide();
         $('#explore-grid').fadeIn();
+        $('#sort-bar').show();
+        updateCount();
       }
     }
+
+    function applySort() {
+      if (!allFetched.length) return;
+      const sort = $('#sort-select').val();
+
+      if (sort === 'rating') {
+        allFetched.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      } else if (sort === 'price-asc') {
+        allFetched.sort((a, b) => (a.price || 0) - (b.price || 0));
+      } else if (sort === 'price-desc') {
+        allFetched.sort((a, b) => (b.price || 0) - (a.price || 0));
+      } else if (sort === 'alpha') {
+        allFetched.sort((a, b) => {
+          const ta = (a.title || a.name || '').toLowerCase();
+          const tb = (b.title || b.name || '').toLowerCase();
+          return ta.localeCompare(tb);
+        });
+      }
+    }
+
+    function updateCount() {
+      const total   = allFetched.length;
+      const visible = $('.card:visible').length;
+      $('#result-count').text(`${visible} of ${total} items`);
+    }
     
+    const TYPE_ICONS = {
+      'course':  'CRS',
+      'product': 'PRD',
+      'club':    'CLB',
+      'event':   'EVT'
+    };
+
     function renderExploreGrid(items) {
-      const icons = {
-        'course': '<span style="font-family: var(--font-serif); color: var(--accent-primary);">CRS</span>',
-        'product': '<span style="font-family: var(--font-serif); color: var(--accent-primary);">PRD</span>',
-        'club': '<span style="font-family: var(--font-serif); color: var(--accent-primary);">CLB</span>',
-        'event': '<span style="font-family: var(--font-serif); color: var(--accent-primary);">EVT</span>'
-      };
+      if (!items || items.length === 0) {
+        $('#explore-grid').html('<div class="state-empty"><h3>No Results</h3><p>Try a different filter or check back later.</p></div>');
+        return;
+      }
       
       const html = items.map(item => {
-        const title = item.title || item.name;
-        
+        const title      = (item.title || item.name || 'Untitled');
+        const desc       = item.description || '';
+        const shortDesc  = desc.length > 110 ? desc.substring(0, 110) + '...' : (desc || 'No description available.');
+        const priceLabel = item.price !== undefined
+          ? (item.price === 0 ? '<span style="color:#4caf50;font-weight:700;">Free</span>' : `<span style="color:var(--accent-primary);font-weight:700;">$${item.price}</span>`)
+          : (item.memberCount !== undefined ? `<span style="color:#888;">${item.memberCount} members</span>` : '');
+        const subline    = item.category || item.type || '';
+        const rating     = item.rating ? `${item.rating} ⭐` : '';
+
+        // Escape for data-attr
+        const safeTitle = title.replace(/"/g, '&quot;');
+        const safeDesc  = desc.replace(/"/g, '&quot;');
+
         return `
-          <div class="card" 
-               style="cursor: pointer;"
-               data-id="${item._id}" 
-               data-type="${item.dbType}" 
-               data-title="${title.replace(/"/g, '&quot;')}" 
-               data-category="${item.category || item.type || ''}"
-               data-desc="${(item.description || '').replace(/"/g, '&quot;')}"
+          <div class="card"
+               data-id="${item._id}"
+               data-type="${item.dbType}"
+               data-title="${safeTitle}"
+               data-category="${subline}"
+               data-desc="${safeDesc}"
+               data-price="${item.price !== undefined ? item.price : ''}"
+               data-rating="${item.rating || ''}"
+               data-members="${item.memberCount || ''}"
+               data-date="${item.date || ''}"
+               data-location="${item.location || ''}"
                onclick="openItemModal(this)">
             <div class="card-img-placeholder">
-              ${icons[item.dbType]}
+              ${TYPE_ICONS[item.dbType] || '—'}
             </div>
             <div class="card-body">
-              <div class="card-tag">${item.dbType} • ${item.category || item.type || ''}</div>
+              <div class="card-tag">${item.dbType} ${subline ? '• ' + subline : ''}</div>
               <h3 class="card-title">${title}</h3>
-              <p class="card-desc">${item.description.substring(0, 100)}...</p>
+              <p class="card-desc">${shortDesc}</p>
               <div class="card-footer">
-                <span style="font-weight: 600; color: var(--accent-primary);">
-                  ${item.price !== undefined ? (item.price === 0 ? 'Free' : '$'+item.price) : 'Learn More'}
+                <span>
+                  ${priceLabel}
+                  ${rating ? `<span style="color:#888;font-size:0.8rem;margin-left:0.5rem;">${rating}</span>` : ''}
                 </span>
-                <button class="btn btn-outline btn-small">Details</button>
+                <button class="btn btn-outline btn-small" onclick="event.stopPropagation();openItemModal(this.closest('.card'))">Details</button>
               </div>
             </div>
           </div>
@@ -335,36 +558,69 @@
       }).join('');
       
       $('#explore-grid').html(html);
+      updateCount();
     }
 
     function openItemModal(el) {
-      const id = $(el).data('id');
-      const type = $(el).data('type');
-      const title = $(el).data('title');
-      const category = $(el).data('category');
-      const desc = $(el).data('desc');
+      const $el      = $(el);
+      const id       = $el.data('id');
+      const type     = $el.data('type');
+      const title    = $el.data('title');
+      const category = $el.data('category');
+      const desc     = $el.data('desc');
+      const price    = $el.data('price');
+      const rating   = $el.data('rating');
+      const members  = $el.data('members');
+      const date     = $el.data('date');
+      const location = $el.data('location');
 
-      // 1. Instantly log interaction in background without alerting user
-      logAction(id, type, 'view');
+      // Log interaction silently
+      if (typeof logAction === 'function') logAction(id, type, 'view');
 
-      // 2. Populate and show rich details modal from Database
       $('#modal-meta').text(`${type} • ${category}`);
       $('#modal-title').text(title);
-      $('#modal-desc').text(desc);
-      
-      let actionText = 'Join Program';
-      if(type === 'course') actionText = 'Enroll in Course';
-      if(type === 'event') actionText = 'RSVP to Event';
-      if(type === 'product') actionText = 'View Product Details';
-      
-      $('#modal-action-btn').text(actionText).css('background', 'var(--accent-primary)').css('color', '#000').off('click');
-      $('#modal-action-btn').click(function() {
-        logAction(id, type, 'enroll'); // Extra interaction
-        $(this).text('✓ SECURELY LOGGED').css('background', 'var(--accent-success)').css('color', '#000');
-        setTimeout(() => $('#details-modal').fadeOut(), 1000);
-      });
+      $('#modal-desc').text(desc || 'No description available.');
 
-      $('#details-modal').css('display', 'flex').hide().fadeIn('fast');
+      // Extra info block
+      let extras = '';
+      if (price !== '' && price !== undefined) {
+        extras += `<span style="color:${price == 0 ? '#4caf50' : 'var(--accent-primary)'};font-weight:700;font-size:1.1rem;">${price == 0 ? 'Free' : '$' + price}</span> `;
+      }
+      if (rating) extras += `<span style="color:#888;margin-left:0.5rem;">${rating} ⭐</span> `;
+      if (members) extras += `<span style="color:#888;margin-left:0.5rem;">👥 ${members} members</span>`;
+      if (date) {
+        const d = new Date(date);
+        extras += `<span style="color:#888;margin-left:0.5rem;">📅 ${d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>`;
+      }
+      if (location) extras += `<span style="color:#888;margin-left:0.5rem;">📍 ${location}</span>`;
+      $('#modal-extra').html(extras);
+
+      const isLoggedIn = !!localStorage.getItem('campusiq_token');
+
+      let actionText = 'Join Program';
+      if (type === 'course')  actionText = 'Enroll in Course';
+      if (type === 'event')   actionText = 'RSVP to Event';
+      if (type === 'product') actionText = 'View Product Details';
+
+      $('#modal-action-btn').text(actionText).css({ 'background':'var(--accent-primary)', 'color':'#000' }).off('click');
+      
+      if (isLoggedIn) {
+        $('#modal-logged-prompt').hide();
+        $('#modal-action-btn').click(function() {
+          if (typeof logAction === 'function') logAction(id, type, 'enroll');
+          $(this).text('✓ Action Logged').css({ 'background': 'rgba(76,175,80,0.8)', 'color': '#000' });
+          setTimeout(() => closeModal(), 1200);
+        });
+      } else {
+        $('#modal-logged-prompt').show();
+        $('#modal-action-btn').click(function(e) {
+          e.preventDefault();
+          closeModal();
+          if (typeof openAuthModal === 'function') openAuthModal('login');
+        });
+      }
+
+      $('#details-modal').css('display', 'flex').hide().fadeIn(200);
     }
   </script>
   <script src="/js/chatbot.js"></script>
