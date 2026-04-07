@@ -339,4 +339,30 @@ router.post('/reviews', authMiddleware, async (req, res) => {
   }
 });
 
+// ═══════════════════════════════════════════════
+// RECOMMENDATION ROUTES (The AI Brains)
+// ═══════════════════════════════════════════════
+
+const { RecommendationEngine } = require('./ai-service');
+
+// GET /api/recommendations/career — Courses & Products
+router.get('/recommendations/career', authMiddleware, async (req, res) => {
+  try {
+    const recommendations = await RecommendationEngine.getCareerRecommendations(req.studentId);
+    res.json({ count: recommendations.length, data: recommendations });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get career recommendations.', details: error.message });
+  }
+});
+
+// GET /api/recommendations/campus — Clubs & Events
+router.get('/recommendations/campus', authMiddleware, async (req, res) => {
+  try {
+    const recommendations = await RecommendationEngine.getCampusRecommendations(req.studentId);
+    res.json(recommendations); // Returns { clubs: [...], events: [...] }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get campus recommendations.', details: error.message });
+  }
+});
+
 module.exports = router;
