@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 
-const cors = require('cors'); // DB Reconnect Trigger
+const cors = require('cors'); // Restart Triggered
 const path = require('path');
 require('dotenv').config();
 
