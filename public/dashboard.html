@@ -135,8 +135,8 @@
   <nav>
     <div class="nav-container">
       <a href="/" class="logo">
-        <div class="logo-icon">🧠</div>
-        CampusIQ AI
+        <span style="color: #fff; font-weight: 400; margin-right: 8px;">C I Q</span>
+        CampusIQ
       </a>
       <div class="nav-links">
         <a href="/explore">Explore</a>
@@ -166,19 +166,11 @@
       <h2 id="user-name">Loading...</h2>
       <p id="user-major" style="color: var(--text-muted); margin-bottom: 1rem;">...</p>
       
-      <div style="margin-top: 1rem; width: 100%; text-align: left;">
-        <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">🎨 UI Mood (Adaptive)</label>
-        <select id="mood-selector" style="width: 100%; padding: 0.6rem; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; cursor: pointer;">
-          <option value="default">Default (Blue/Purple)</option>
-          <option value="focus">Focus (Teal/Emerald)</option>
-          <option value="hacker">Hacker (Neon Green)</option>
-          <option value="sunset">Sunset (Orange/Red)</option>
-        </select>
-      </div>
+
       
       <div style="width: 100%; margin-top: 2rem; text-align: left;">
-        <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-          🧬 Your Learning DNA
+        <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-primary);">
+          Learning DNA
         </h4>
         <p style="font-size: 0.85rem; color: var(--text-muted);">Real-time visualization based on your behavior</p>
         <canvas id="dna-canvas"></canvas>
@@ -188,12 +180,12 @@
     <!-- Right Panel: AI Recommendations -->
     <main class="rec-panel">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('career')">🎯 Career Brain (Courses & Skills)</button>
-        <button class="tab-btn" onclick="switchTab('campus')">🏫 Campus Brain (Clubs & Events)</button>
+        <button class="tab-btn active" onclick="switchTab('career')">Career Path</button>
+        <button class="tab-btn" onclick="switchTab('campus')">Campus Life</button>
       </div>
 
       <div id="loading" style="text-align: center; padding: 4rem;">
-        <div style="font-size: 2rem; animation: pulse 1.5s infinite;">🧠 Thinking...</div>
+        <div style="font-size: 1.5rem; animation: pulse 1.5s infinite; font-family: var(--font-serif); color: var(--accent-primary);">Processing Algorithms...</div>
       </div>
 
       <!-- Career Content -->

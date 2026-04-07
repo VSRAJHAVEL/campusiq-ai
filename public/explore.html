@@ -152,8 +152,8 @@
   <nav>
     <div class="nav-container">
       <a href="/" class="logo">
-        <div class="logo-icon">🧠</div>
-        CampusIQ AI
+        <span style="color: #fff; font-weight: 400; margin-right: 8px;">C I Q</span>
+        CampusIQ
       </a>
       <div class="nav-links">
         <a href="/explore" class="active">Explore</a>
@@ -184,7 +184,7 @@
 
     <!-- Items Grid -->
     <div id="loading" style="text-align: center; padding: 4rem;">
-      <div style="font-size: 2rem; animation: pulse 1.5s infinite;">⏳ Fetching Directory...</div>
+      <div style="font-size: 1.5rem; animation: pulse 1.5s infinite; font-family: var(--font-serif); color: var(--accent-primary);">Fetching Archives...</div>
     </div>
     
     <div class="grid" id="explore-grid" style="display: none;"></div>
@@ -261,10 +261,10 @@
     
     function renderExploreGrid(items) {
       const icons = {
-        'course': '📚',
-        'product': '📦',
-        'club': '🤝',
-        'event': '📅'
+        'course': '<span style="font-family: var(--font-serif); color: var(--accent-primary);">CRS</span>',
+        'product': '<span style="font-family: var(--font-serif); color: var(--accent-primary);">PRD</span>',
+        'club': '<span style="font-family: var(--font-serif); color: var(--accent-primary);">CLB</span>',
+        'event': '<span style="font-family: var(--font-serif); color: var(--accent-primary);">EVT</span>'
       };
       
       const html = items.map(item => {

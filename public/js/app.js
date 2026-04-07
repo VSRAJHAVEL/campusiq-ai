@@ -159,8 +159,7 @@ function renderCareerRecs(items) {
       </div>
       
       <div class="ai-explanation">
-        <div>💡</div>
-        <div>${rec.explanation}</div>
+        <div><span style="font-family:var(--font-serif); font-style:italic;">AI Insight:</span> ${rec.explanation}</div>
       </div>
     </div>
   `).join('');
@@ -177,8 +176,7 @@ function renderCampusRecs(data) {
         ${rec.item.category} • ${rec.item.memberCount} members
       </p>
       <div class="ai-explanation" style="color: var(--accent-secondary)">
-        <div>💡</div>
-        <div>${rec.explanation}</div>
+        <div><span style="font-family:var(--font-serif); font-style:italic;">AI Insight:</span> ${rec.explanation}</div>
       </div>
     </div>
   `).join('');
@@ -191,8 +189,7 @@ function renderCampusRecs(data) {
         ${new Date(rec.item.date).toLocaleDateString()} • ${rec.item.location}
       </p>
       <div class="ai-explanation" style="color: var(--accent-success)">
-        <div>💡</div>
-        <div>${rec.explanation}</div>
+        <div><span style="font-family:var(--font-serif); font-style:italic;">AI Insight:</span> ${rec.explanation}</div>
       </div>
     </div>
   `).join('');
@@ -356,40 +353,4 @@ async function logAction(itemId, itemType, action) {
   }
 }
 
-// ─── MOOD / THEME ADAPTIVE UI ─────────────────────
-$(document).ready(function() {
-  const currentMood = localStorage.getItem('campusiq_mood') || 'default';
-  
-  if ($('#mood-selector').length) {
-    $('#mood-selector').val(currentMood);
-  }
-  applyMood(currentMood);
-  
-  $('#mood-selector').change(function() {
-    const newMood = $(this).val();
-    localStorage.setItem('campusiq_mood', newMood);
-    applyMood(newMood);
-  });
-  
-  function applyMood(mood) {
-    const root = document.documentElement;
-    
-    if (mood === 'default') {
-      root.style.setProperty('--bg-dark', '#0a0f18');
-      root.style.setProperty('--accent-primary', '#3b82f6');
-      root.style.setProperty('--accent-secondary', '#8b5cf6');
-    } else if (mood === 'focus') {
-      root.style.setProperty('--bg-dark', '#051f1c');
-      root.style.setProperty('--accent-primary', '#14b8a6');
-      root.style.setProperty('--accent-secondary', '#10b981');
-    } else if (mood === 'hacker') {
-      root.style.setProperty('--bg-dark', '#000000');
-      root.style.setProperty('--accent-primary', '#22c55e');
-      root.style.setProperty('--accent-secondary', '#166534');
-    } else if (mood === 'sunset') {
-      root.style.setProperty('--bg-dark', '#1a0b16');
-      root.style.setProperty('--accent-primary', '#f97316');
-      root.style.setProperty('--accent-secondary', '#e11d48');
-    }
-  }
-});
+

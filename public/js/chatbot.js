@@ -11,7 +11,7 @@ $(document).ready(function() {
     <div id="ai-chatbot" class="chatbot-container">
       <div class="chatbot-header">
         <div class="bot-info">
-          <span class="bot-avatar">🤖</span>
+          <span class="bot-avatar" style="font-family: var(--font-serif); font-size: 0.9rem; font-weight: bold; background: var(--accent-primary); color: #000;">AI</span>
           <div>
             <h4>CampusIQ Mentor</h4>
             <small>Online</small>
@@ -42,7 +42,7 @@ $(document).ready(function() {
     </div>
     
     <button id="chatbot-toggle" class="chat-toggle-btn">
-      💬 Chat
+      AI MENTOR
     </button>
   `;
   

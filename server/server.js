@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
+
+
+const cors = require('cors'); // DB Reconnect Trigger
 const path = require('path');
 require('dotenv').config();
 
@@ -24,7 +26,7 @@ mongoose.connect(MONGO_URI)
   })
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err.message);
-    process.exit(1);
+    console.error('⚠️  Running without Database. API features will fail, but static UI will load.');
   });
 
 mongoose.connection.on('disconnected', () => {
