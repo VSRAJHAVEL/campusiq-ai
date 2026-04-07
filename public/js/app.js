@@ -564,23 +564,27 @@ function renderCareerRecs(items) {
   const html = items.map(rec => {
     if (!rec || !rec.item) return '';
     const item = rec.item;
-    const priceLabel = item.price !== undefined ? (item.price === 0 ? 'Free' : `$${item.price}`) : '';
+    const priceLabel = item.price !== undefined
+      ? (item.price === 0 ? '<span style="color:#4caf50;font-weight:700;">Free</span>' : `<span style="color:var(--accent-primary);font-weight:700;">₹${item.price.toLocaleString('en-IN')}</span>`)
+      : '';
+    const fv = JSON.stringify(item.featureVector || []);
     return `
-    <div class="rec-item">
+    <div class="rec-item" style="cursor:pointer;" onclick="logInteractionAndUpdateDNA('${item._id}','${item.type || 'course'}',${fv}, this)">
       <div style="font-size:0.72rem;color:var(--accent-secondary);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.08em;">
         ${item.type || ''} • ${item.difficulty || ''}
       </div>
       <h4 style="margin-bottom:0.5rem;font-family:'Playfair Display',serif;">${item.title || 'Untitled'}</h4>
       <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">
-        ${item.category || ''} ${item.rating ? '• ' + item.rating + ' ⭐' : ''} ${item.totalRatings ? '(' + item.totalRatings + ')' : ''}
+        ${item.category || ''} ${item.rating ? '• ' + item.rating + ' ⭐' : ''} ${item.totalRatings ? '(' + item.totalRatings.toLocaleString() + ')' : ''}
       </p>
-      ${priceLabel ? `<p style="font-weight:700;color:var(--accent-primary);margin-bottom:0.8rem;">${priceLabel}</p>` : ''}
+      ${priceLabel ? `<p style="margin-bottom:0.8rem;">${priceLabel}</p>` : ''}
       <div style="margin-bottom:1rem;">
         ${(item.tags || []).slice(0,3).map(tag => `<span class="tag">${tag}</span>`).join('')}
       </div>
       <div class="ai-explanation">
         <div><span style="font-family:'Playfair Display',serif;font-style:italic;">AI Insight:</span> ${rec.explanation || 'Recommended based on your profile.'}</div>
       </div>
+      <div style="margin-top:0.8rem;font-size:0.72rem;color:#444;letter-spacing:0.08em;">CLICK TO REGISTER INTEREST →</div>
     </div>
   `}).join('');
 
@@ -597,8 +601,9 @@ function renderCampusRecs(data) {
   } else {
     const clubsHtml = clubs.map(rec => {
       if (!rec || !rec.item) return '';
+      const fv = JSON.stringify(rec.item.featureVector || []);
       return `
-      <div class="rec-item" style="border-color:var(--accent-secondary)">
+      <div class="rec-item" style="border-color:var(--accent-secondary);cursor:pointer;" onclick="logInteractionAndUpdateDNA('${rec.item._id}','club',${fv}, this)">
         <h4 style="margin-bottom:0.5rem;font-family:'Playfair Display',serif;">${rec.item.name || 'Club'}</h4>
         <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">
           ${rec.item.category || ''} • ${rec.item.memberCount || 0} members
@@ -607,6 +612,7 @@ function renderCampusRecs(data) {
         <div class="ai-explanation" style="color:var(--accent-secondary)">
           <div><span style="font-family:'Playfair Display',serif;font-style:italic;">AI Insight:</span> ${rec.explanation || ''}</div>
         </div>
+        <div style="margin-top:0.8rem;font-size:0.72rem;color:#444;letter-spacing:0.08em;">CLICK TO REGISTER INTEREST →</div>
       </div>
     `}).join('');
     $('#clubs-grid').html(clubsHtml);
@@ -617,17 +623,19 @@ function renderCampusRecs(data) {
   } else {
     const eventsHtml = events.map(rec => {
       if (!rec || !rec.item) return '';
-      const dateStr = rec.item.date ? new Date(rec.item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBA';
+      const dateStr = rec.item.date ? new Date(rec.item.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBA';
+      const fv = JSON.stringify(rec.item.featureVector || []);
       return `
-      <div class="rec-item" style="border-color:var(--accent-success)">
+      <div class="rec-item" style="border-color:#4caf50;cursor:pointer;" onclick="logInteractionAndUpdateDNA('${rec.item._id}','event',${fv}, this)">
         <div style="font-size:0.72rem;color:var(--accent-primary);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">${rec.item.type || 'Event'}</div>
         <h4 style="margin-bottom:0.5rem;font-family:'Playfair Display',serif;">${rec.item.title || 'Event'}</h4>
         <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">
           📅 ${dateStr} • 📍 ${rec.item.location || 'On Campus'}
         </p>
-        <div class="ai-explanation" style="color:var(--accent-success)">
+        <div class="ai-explanation" style="color:#4caf50">
           <div><span style="font-family:'Playfair Display',serif;font-style:italic;">AI Insight:</span> ${rec.explanation || ''}</div>
         </div>
+        <div style="margin-top:0.8rem;font-size:0.72rem;color:#444;letter-spacing:0.08em;">CLICK TO REGISTER INTEREST →</div>
       </div>
     `}).join('');
     $('#events-grid').html(eventsHtml);
@@ -812,5 +820,116 @@ async function savePreferences() {
     }
   } catch(e) {
     showToast('Connection error saving preferences.', 'error');
+  }
+}
+
+// ─── LIVE DNA UPDATE ON CARD CLICK ──────────────────
+// Called when user clicks any recommendation card on dashboard.
+// 1. Logs the interaction to the server (updates AI model)
+// 2. Animates DNA bars immediately based on item's feature vector
+// 3. Redraws the radar canvas
+
+const DNA_DIMENSION_MAP = [
+  // Maps 10-dimensional featureVector indices to DNA properties
+  // [AI/ML, WebDev, DataScience, Cloud, Mobile, Cybersec, DevOps, Design, Business, Hardware]
+  { prop: 'curiosity',      sources: [0, 2, 4] },   // AI/ML, DataSci, Mobile → curiosity
+  { prop: 'technicalDepth', sources: [0, 1, 5, 6] }, // AI/ML, WebDev, Cybersec, DevOps → depth
+  { prop: 'creativity',     sources: [7, 2, 4] },   // Design, DataSci, Mobile → creativity
+  { prop: 'leadership',     sources: [8, 6] },       // Business, DevOps → leadership
+  { prop: 'networking',     sources: [8, 7] },       // Business, Design → networking
+  { prop: 'consistency',    sources: [1, 6, 3] },    // WebDev, DevOps, Cloud → consistency
+  { prop: 'careerFocus',    sources: [0, 1, 3, 8] }, // AI/ML, WebDev, Cloud, Business → focus
+  { prop: 'adaptability',   sources: [2, 4, 7, 9] }  // DataSci, Mobile, Design, Hardware → adaptability
+];
+
+// Track the user's local live DNA state (starts from their actual DNA)
+let liveDNA = null;
+
+async function logInteractionAndUpdateDNA(itemId, itemType, featureVector, cardEl) {
+  // Flash the card border to gold to confirm the click
+  if (cardEl) {
+    cardEl.style.borderColor = 'var(--accent-primary)';
+    cardEl.style.background  = 'rgba(197,160,89,0.06)';
+    const hint = cardEl.querySelector('[style*="CLICK TO REGISTER"]');
+    if (hint) hint.textContent = '✓ Interest Registered';
+  }
+
+  // 1. Log to server asynchronously (fire-and-forget)
+  if (userToken) {
+    fetch(`${API_URL}/interactions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${userToken}`
+      },
+      body: JSON.stringify({ itemId, itemType, action: 'view' })
+    }).catch(() => {}); // Silent fail — don't block UI
+  }
+
+  // 2. Initialise liveDNA from saved userData if not yet set
+  if (!liveDNA && userData && userData.studentDNA) {
+    liveDNA = { ...userData.studentDNA };
+  } else if (!liveDNA) {
+    liveDNA = {
+      curiosity: 50, technicalDepth: 70, creativity: 65,
+      leadership: 40, networking: 60, consistency: 80,
+      careerFocus: 85, adaptability: 60
+    };
+  }
+
+  // 3. Blend the item's feature vector into liveDNA
+  if (Array.isArray(featureVector) && featureVector.length >= 10) {
+    const LEARNING_RATE = 0.08; // How much each click shifts the DNA (0–1)
+
+    DNA_DIMENSION_MAP.forEach(dim => {
+      // Average influence of the relevant feature vector axes
+      const influence = dim.sources.reduce((sum, idx) => sum + (featureVector[idx] || 0), 0) / dim.sources.length;
+      const nudge     = influence * 100 * LEARNING_RATE;
+
+      // Nudge the DNA value toward the item's influence, capped at 5–99
+      liveDNA[dim.prop] = Math.max(5, Math.min(99, liveDNA[dim.prop] + nudge));
+    });
+  }
+
+  // 4. Animate DNA bars immediately
+  updateDNABarsLive(liveDNA);
+
+  // 5. Redraw radar canvas
+  drawDNACanvas(liveDNA);
+
+  showToast('Learning DNA updated based on your interest!', 'success');
+}
+
+// Animate the DNA stat bars in the left panel with new values
+function updateDNABarsLive(dna) {
+  const dims = [
+    { label: 'Curiosity',       prop: 'curiosity' },
+    { label: 'Technical Depth', prop: 'technicalDepth' },
+    { label: 'Creativity',      prop: 'creativity' },
+    { label: 'Leadership',      prop: 'leadership' },
+    { label: 'Networking',      prop: 'networking' },
+    { label: 'Consistency',     prop: 'consistency' },
+    { label: 'Career Focus',    prop: 'careerFocus' },
+    { label: 'Adaptability',    prop: 'adaptability' }
+  ];
+
+  const html = dims.map(d => {
+    const val = Math.round(dna[d.prop] || 50);
+    return `
+      <div class="dna-stat-bar">
+        <div class="dna-stat-label">
+          <span>${d.label}</span>
+          <span style="color:var(--accent-primary);font-weight:600;">${val}%</span>
+        </div>
+        <div class="dna-bar-track">
+          <div class="dna-bar-fill" style="width:${val}%;transition:width 0.7s cubic-bezier(0.4,0,0.2,1);"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // If #dna-bars exists (dashboard), update it
+  if ($('#dna-bars').length) {
+    $('#dna-bars').html(html);
   }
 }

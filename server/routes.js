@@ -487,7 +487,7 @@ Try asking: <em>"Show me AI courses"</em>, <em>"What events are upcoming?"</em>,
       const top3 = recs.slice(0, 3);
       if (top3.length > 0) {
         const list = top3.map((r, i) => {
-          const price = r.item.price === 0 ? '<span style="color:#4caf50">Free</span>' : `$${r.item.price}`;
+          const price = r.item.price === 0 ? '<span style="color:#4caf50">Free</span>' : `₹${r.item.price.toLocaleString('en-IN')}`;
           return `<b>${i+1}. ${r.item.title}</b> (${r.item.category}) — ${price} — ${r.item.rating}⭐<br>
 <em style="color:#888;font-size:0.82em;">${r.explanation}</em>`;
         }).join('<br><br>');
@@ -561,7 +561,7 @@ Try asking: <em>"Show me AI courses"</em>, <em>"What events are upcoming?"</em>,
     if (isPriceQuery) {
       const cheapest = await Course.find({ price: { $gt: 0 } }).sort({ price: 1 }).limit(4);
       const freeCount = await Course.countDocuments({ price: 0 });
-      const list = cheapest.map(c => `• <b>${c.title}</b> — $${c.price}`).join('<br>');
+      const list = cheapest.map(c => `• <b>${c.title}</b> — ₹${c.price.toLocaleString('en-IN')}`).join('<br>');
       reply = `${greet}We have <b>${freeCount} completely free</b> courses & resources!<br><br>
 Affordable paid options start from:<br>${list}<br><br>
 Filter by price on the <a href="/explore" style="color:var(--accent-primary);">Explore page</a> (Sort by Price ↑)`;
@@ -600,7 +600,7 @@ Filter by price on the <a href="/explore" style="color:var(--accent-primary);">E
         reply = `${greet}I didn't find a specific match, but you can browse our full catalog on the <a href="/explore" style="color:var(--accent-primary);">Explore page</a>!`;
       } else {
         const list = items.map(c => {
-          const price = c.price === 0 ? '<span style="color:#4caf50">Free</span>' : `$${c.price}`;
+          const price = c.price === 0 ? '<span style="color:#4caf50">Free</span>' : `₹${c.price.toLocaleString('en-IN')}`;
           return `📘 <b>${c.title}</b><br>
 &nbsp;&nbsp;&nbsp;${c.category} · ${c.difficulty} · ${price} · ${c.rating}⭐ · ${c.duration}<br>
 &nbsp;&nbsp;&nbsp;<em style="color:#888;font-size:0.82em;">${c.description.substring(0, 90)}...</em>`;
@@ -619,7 +619,7 @@ Filter by price on the <a href="/explore" style="color:var(--accent-primary);">E
         .sort({ rating: -1 }).limit(3);
       const careerEvents = await Event.find({ type: 'career-fair' }).limit(2);
 
-      let courseList = careerCourses.map(c => `• <b>${c.title}</b> (${c.category}) — ${c.price === 0 ? 'Free' : '$'+c.price}`).join('<br>');
+      let courseList = careerCourses.map(c => `• <b>${c.title}</b> (${c.category}) — ${c.price === 0 ? 'Free' : '\u20b9'+c.price.toLocaleString('en-IN')}`).join('<br>');
       let eventList = careerEvents.length
         ? careerEvents.map(e => `• <b>${e.title}</b> — ${new Date(e.date).toLocaleDateString('en-US', {month:'short',day:'numeric'})}`).join('<br>')
         : '• Check back soon for career fairs!';
