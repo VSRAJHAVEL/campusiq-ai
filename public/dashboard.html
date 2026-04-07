@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | CampusIQ AI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <style>
+    /* Dashboard Specific Styles */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 100px auto 40px;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 2rem;
+    }
+    
+    .dna-panel, .rec-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .dna-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .avatar-placeholder {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    
+    #dna-canvas {
+      width: 300px;
+      height: 300px;
+      margin: 2rem 0;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 1rem;
+    }
+    
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all var(--trans-fast);
+    }
+    
+    .tab-btn.active, .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .rec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .rec-item {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all var(--trans-fast);
+      position: relative;
+    }
+    
+    .rec-item:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-4px);
+    }
+
+    .ai-explanation {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--glass-border);
+      font-size: 0.85rem;
+      color: var(--accent-primary);
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .tag {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.1);
+      display: inline-block;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <div class="logo-icon">🧠</div>
+        CampusIQ AI
+      </a>
+      <div class="nav-links">
+        <a href="/explore">Explore</a>
+        <a href="/dashboard" class="active">Dashboard</a>
+        <a href="#" id="logout-btn" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Login Overlay (Shown if not authenticated) -->
+  <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+    <div class="dna-panel" style="width: 100%; max-width: 400px;">
+      <h2>Sign In</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem;">Access your AI-powered profile.</p>
+      <form id="login-form" style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+        <input type="email" id="email" placeholder="Email" value="student@example.com" style="padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); color: white;" required>
+        <input type="password" id="password" placeholder="Password" value="password123" style="padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); color: white;" required>
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Left Panel: Profile & DNA -->
+    <aside class="dna-panel">
+      <div class="avatar-placeholder" id="user-initial">--</div>
+      <h2 id="user-name">Loading...</h2>
+      <p id="user-major" style="color: var(--text-muted); margin-bottom: 1rem;">...</p>
+      
+      <div style="width: 100%; margin-top: 2rem; text-align: left;">
+        <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+          🧬 Your Learning DNA
+        </h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Real-time visualization based on your behavior</p>
+        <canvas id="dna-canvas"></canvas>
+      </div>
+    </aside>
+
+    <!-- Right Panel: AI Recommendations -->
+    <main class="rec-panel">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('career')">🎯 Career Brain (Courses & Skills)</button>
+        <button class="tab-btn" onclick="switchTab('campus')">🏫 Campus Brain (Clubs & Events)</button>
+      </div>
+
+      <div id="loading" style="text-align: center; padding: 4rem;">
+        <div style="font-size: 2rem; animation: pulse 1.5s infinite;">🧠 Thinking...</div>
+      </div>
+
+      <!-- Career Content -->
+      <div id="content-career" class="rec-content" style="display: none;">
+        <h3 style="margin-bottom: 1.5rem;">Top Course & Product Recommendations</h3>
+        <div class="rec-grid" id="career-grid"></div>
+      </div>
+
+      <!-- Campus Content -->
+      <div id="content-campus" class="rec-content" style="display: none;">
+        <h3 style="margin-bottom: 1.5rem;">Recommended Clubs</h3>
+        <div class="rec-grid" id="clubs-grid" style="margin-bottom: 3rem;"></div>
+        
+        <h3 style="margin-bottom: 1.5rem;">Upcoming Events For You</h3>
+        <div class="rec-grid" id="events-grid"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
