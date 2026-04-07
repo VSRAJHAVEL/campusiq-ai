@@ -1,13 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusIQ AI — Smart Campus & Career Companion</title>
-    <meta name="description" content="AI-powered recommendation system for college students. Get personalized course, product, club, and career suggestions based on your behavior.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusIQ AI — Smart Campus & Career Companion</title>
+  <meta name="description" content="AI-powered recommendation system for college students. Get personalized course, product, club, and career suggestions based on your behavior.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-    <h1>🎓 CampusIQ AI</h1>
-    <p>Coming soon — AI-powered Smart Campus & Career Companion</p>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <div class="logo-icon">🧠</div>
+        CampusIQ AI
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="/explore">Explore</a>
+        <a href="/dashboard" class="btn btn-outline" style="padding: 0.5rem 1rem;">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <canvas id="neural-canvas"></canvas>
+    <div class="hero-content">
+      <h1 class="hero-title">Your <span class="text-gradient">AI-Powered</span> Campus & Career Guide</h1>
+      <p class="hero-subtitle">CampusIQ learns your unique skills, interests, and behavior to recommend the best clubs, courses, events, and projects.</p>
+      
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <a href="/explore" class="btn btn-primary">Start Exploring</a>
+        <a href="/dashboard" class="btn btn-outline">View Your DNA</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <h3 class="text-gradient">30+</h3>
+          <p>Courses & Products</p>
+        </div>
+        <div class="stat-item">
+          <h3 class="text-gradient">25+</h3>
+          <p>Clubs & Events</p>
+        </div>
+        <div class="stat-item">
+          <h3 class="text-gradient">100%</h3>
+          <p>Personalized AI</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features-section">
+    <div class="section-header">
+      <h2 class="section-title">Two Brains, <span class="text-gradient">One Platform</span></h2>
+      <p style="color: var(--text-muted);">CampusIQ uses dual-brain AI architecture to maximize both your university experience and career readiness.</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Campus Brain -->
+      <div class="feature-card">
+        <div class="feature-icon">🏫</div>
+        <h3 class="feature-title">The Campus Brain</h3>
+        <p class="feature-desc">Recommends the right clubs to join, study spots based on noise preferences, events you'll love, and matching study groups.</p>
+        <a href="/explore" class="text-gradient" style="font-weight: 600; margin-top: auto;">Explore Campus Life →</a>
+      </div>
+
+      <!-- Career Brain -->
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3 class="feature-title">The Career Brain</h3>
+        <p class="feature-desc">Analyzes your skill gaps against the job market. Recommends courses, tools, and projects to boost your employability.</p>
+        <a href="/explore" class="text-gradient" style="font-weight: 600; margin-top: auto;">Explore Career Paths →</a>
+      </div>
+
+      <!-- Learning DNA -->
+      <div class="feature-card">
+        <div class="feature-icon">🧬</div>
+        <h3 class="feature-title">Learning DNA</h3>
+        <p class="feature-desc">A visual constellation of your 8-dimensional learning personality that evolves as you interact with the platform.</p>
+        <a href="/dashboard" class="text-gradient" style="font-weight: 600; margin-top: auto;">View Dashboard →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>🎓 CampusIQ AI • Built for AIWD Course Project • Uses Express, MongoDB & jQuery</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // ═══════════════════════════════════════════════
+    // NEURAL BACKGROUND ANIMATION (Canvas & Vanilla JS)
+    // ═══════════════════════════════════════════════
+    $(document).ready(function() {
+      const canvas = document.getElementById('neural-canvas');
+      const ctx = canvas.getContext('2d');
+      
+      let width, height;
+      let particles = [];
+      
+      // Configuration
+      const particleCount = 80;
+      const connectionDistance = 150;
+      const particleSpeed = 0.5;
+      
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }
+      
+      window.addEventListener('resize', resize);
+      resize();
+      
+      // Particle Class
+      class Particle {
+        constructor() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.vx = (Math.random() - 0.5) * particleSpeed;
+          this.vy = (Math.random() - 0.5) * particleSpeed;
+          this.radius = Math.random() * 2 + 1;
+        }
+        
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          
+          if (this.x < 0 || this.x > width) this.vx *= -1;
+          if (this.y < 0 || this.y > height) this.vy *= -1;
+        }
+        
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(59, 130, 246, 0.5)'; // Primary accent
+          ctx.fill();
+        }
+      }
+      
+      // Initialize particles
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+      
+      // Mouse interaction
+      let mouse = { x: null, y: null };
+      
+      $(window).on('mousemove', function(e) {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+      
+      $(window).on('mouseout', function() {
+        mouse.x = null;
+        mouse.y = null;
+      });
+      
+      // Animation Loop
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Update and draw particles
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].draw();
+          
+          // Connect particles
+          for (let j = i; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < connectionDistance) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(139, 92, 246, ${1 - distance / connectionDistance})`; // Secondary accent
+              ctx.lineWidth = 1;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+          
+          // Connect to mouse
+          if (mouse.x && mouse.y) {
+            const dx = particles[i].x - mouse.x;
+            const dy = particles[i].y - mouse.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < connectionDistance * 1.5) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(59, 130, 246, ${1 - distance / (connectionDistance * 1.5)})`;
+              ctx.lineWidth = 2;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.stroke();
+            }
+          }
+        }
+        
+        requestAnimationFrame(animate);
+      }
+      
+      animate();
+    });
+  </script>
 </body>
 </html>
