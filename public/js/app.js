@@ -15,10 +15,13 @@ $(document).ready(function() {
   
   // ─── AUTHENTICATION FLOW ────────────────────────
   if (userToken) {
+    $('.nav-links').css('visibility', 'visible');
     fetchUserProfile();
   } else {
-    // If on dashboard without auth, show login overlay
-    if (window.location.pathname.includes('dashboard')) {
+    $('.nav-links').css('visibility', 'hidden');
+    if (window.location.pathname.includes('explore')) {
+      window.location.href = '/dashboard';
+    } else if (window.location.pathname.includes('dashboard')) {
       $('#login-overlay').css('display', 'flex');
     }
   }
@@ -61,6 +64,7 @@ $(document).ready(function() {
         localStorage.setItem('campusiq_token', data.token);
         userToken = data.token;
         $('#login-overlay').fadeOut();
+        $('.nav-links').css('visibility', 'visible');
         fetchUserProfile();
       }
     } catch (err) {
@@ -97,9 +101,14 @@ async function fetchUserProfile() {
         $('#login-overlay').fadeOut();
       }
     } else {
-      localStorage.removeItem('campusiq_token');
-      if (window.location.pathname.includes('dashboard')) {
-        $('#login-overlay').css('display', 'flex');
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem('campusiq_token');
+        $('.nav-links').css('visibility', 'hidden');
+        if (window.location.pathname.includes('dashboard')) {
+          $('#login-overlay').css('display', 'flex');
+        } else if (window.location.pathname.includes('explore')) {
+          window.location.href = '/dashboard';
+        }
       }
     }
   } catch (err) {
