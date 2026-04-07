@@ -32,9 +32,8 @@ mongoose.connection.on('disconnected', () => {
 });
 
 // ─── API Routes ─────────────────────────────────────────
-// Routes will be added in Step 3
-// const routes = require('./routes');
-// app.use('/api', routes);
+const routes = require('./routes');
+app.use('/api', routes);
 
 // ─── Health Check ───────────────────────────────────────
 app.get('/api/health', (req, res) => {
