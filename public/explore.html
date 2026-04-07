@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore | CampusIQ AI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <style>
+    .explore-container {
+      max-width: 1200px;
+      margin: 100px auto 40px;
+      padding: 0 2rem;
+    }
+    
+    .explore-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .search-bar {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border-radius: 99px;
+      border: 1px solid var(--glass-border);
+      background: var(--bg-card);
+      color: white;
+      font-size: 1.1rem;
+      backdrop-filter: blur(10px);
+      transition: all var(--trans-fast);
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+    }
+    
+    .filter-pills {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    
+    .pill {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1.2rem;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: all var(--trans-fast);
+    }
+    
+    .pill.active, .pill:hover {
+      background: var(--accent-primary);
+      color: white;
+      border-color: var(--accent-primary);
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all var(--trans-fast);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-primary);
+      box-shadow: var(--glass-shadow);
+    }
+    
+    .card-img-placeholder {
+      height: 140px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .card-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-primary);
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    
+    .card-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+      flex: 1;
+    }
+    
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--glass-border);
+    }
+    
+    .btn-small {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <div class="logo-icon">🧠</div>
+        CampusIQ AI
+      </a>
+      <div class="nav-links">
+        <a href="/explore" class="active">Explore</a>
+        <a href="/dashboard">Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="explore-container">
+    <div class="explore-header">
+      <h1 class="section-title">Explore <span class="text-gradient">CampusIQ</span></h1>
+      <p style="color: var(--text-muted);">Discover courses, products, clubs, and events to enrich your journey.</p>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <input type="text" id="search-input" class="search-input" placeholder="Search for 'Python', 'Machine Learning', 'Hackathon'...">
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-pills">
+      <div class="pill active" data-filter="all">All Items</div>
+      <div class="pill" data-filter="course">Courses</div>
+      <div class="pill" data-filter="product">Products</div>
+      <div class="pill" data-filter="club">Clubs</div>
+      <div class="pill" data-filter="event">Events</div>
+    </div>
+
+    <!-- Items Grid -->
+    <div id="loading" style="text-align: center; padding: 4rem;">
+      <div style="font-size: 2rem; animation: pulse 1.5s infinite;">⏳ Fetching Directory...</div>
+    </div>
+    
+    <div class="grid" id="explore-grid" style="display: none;"></div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Setup specific to explore page
+      fetchExploreData('all');
+      
+      // Filter clicks
+      $('.pill').click(function() {
+        $('.pill').removeClass('active');
+        $(this).addClass('active');
+        const filter = $(this).data('filter');
+        fetchExploreData(filter);
+      });
+      
+      // Basic Search filter
+      $('#search-input').on('keyup', function() {
+        const query = $(this).val().toLowerCase();
+        $('.card').each(function() {
+          const title = $(this).find('.card-title').text().toLowerCase();
+          const desc = $(this).find('.card-desc').text().toLowerCase();
+          if (title.includes(query) || desc.includes(query)) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+    });
+    
+    async function fetchExploreData(type) {
+      $('#loading').show();
+      $('#explore-grid').hide();
+      
+      try {
+        let allItems = [];
+        
+        if (type === 'all' || type === 'course' || type === 'product') {
+          let url = '/api/courses';
+          if (type === 'course' || type === 'product') url += `?type=${type}`;
+          const res = await fetch(url);
+          const { data } = await res.json();
+          allItems = allItems.concat(data.map(item => ({...item, dbType: item.type})));
+        }
+        
+        if (type === 'all' || type === 'club') {
+          const res = await fetch('/api/clubs');
+          const { data } = await res.json();
+          allItems = allItems.concat(data.map(item => ({...item, dbType: 'club'})));
+        }
+        
+        if (type === 'all' || type === 'event') {
+          const res = await fetch('/api/events');
+          const { data } = await res.json();
+          allItems = allItems.concat(data.map(item => ({...item, dbType: 'event'})));
+        }
+        
+        // Shuffle array slightly for mix
+        allItems.sort(() => Math.random() - 0.5);
+        
+        renderExploreGrid(allItems);
+      } catch (err) {
+        console.error(err);
+        $('#explore-grid').html('<p style="text-align:center;width:100%;">Failed to load data. Ensure backend is running.</p>');
+      } finally {
+        $('#loading').hide();
+        $('#explore-grid').fadeIn();
+      }
+    }
+    
+    function renderExploreGrid(items) {
+      const icons = {
+        'course': '📚',
+        'product': '📦',
+        'club': '🤝',
+        'event': '📅'
+      };
+      
+      const html = items.map(item => {
+        const title = item.title || item.name;
+        // Interaction Logging (if authenticated)
+        const onclick = userToken ? `logAction('${item._id}', '${item.dbType}', 'view')` : '';
+        
+        return `
+          <div class="card" onclick="${onclick}">
+            <div class="card-img-placeholder">
+              ${icons[item.dbType]}
+            </div>
+            <div class="card-body">
+              <div class="card-tag">${item.dbType} • ${item.category || item.type || ''}</div>
+              <h3 class="card-title">${title}</h3>
+              <p class="card-desc">${item.description.substring(0, 100)}...</p>
+              <div class="card-footer">
+                <span style="font-weight: 600; color: var(--accent-primary);">
+                  ${item.price !== undefined ? (item.price === 0 ? 'Free' : '$'+item.price) : 'Learn More'}
+                </span>
+                <button class="btn btn-outline btn-small">Details</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      $('#explore-grid').html(html);
+    }
+  </script>
+</body>
+</html>

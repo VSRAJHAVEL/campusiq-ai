@@ -33,7 +33,7 @@ $(document).ready(function() {
     
     try {
       // First try to login
-      let res = await fetch(\`\${API_URL}/auth/login\`, {
+      let res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -43,7 +43,7 @@ $(document).ready(function() {
       
       // If fails, auto-register them
       if (!res.ok) {
-        res = await fetch(\`\${API_URL}/auth/register\`, {
+        res = await fetch(`${API_URL}/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
@@ -80,8 +80,8 @@ $(document).ready(function() {
 // ─── DATA FETCHING ──────────────────────────────
 async function fetchUserProfile() {
   try {
-    const res = await fetch(\`\${API_URL}/auth/me\`, {
-      headers: { 'Authorization': \`Bearer \${userToken}\` }
+    const res = await fetch(`${API_URL}/auth/me`, {
+      headers: { 'Authorization': `Bearer ${userToken}` }
     });
     
     if (res.ok) {
@@ -109,8 +109,8 @@ async function fetchUserProfile() {
 
 async function fetchCareerRecommendations() {
   try {
-    const res = await fetch(\`\${API_URL}/recommendations/career\`, {
-      headers: { 'Authorization': \`Bearer \${userToken}\` }
+    const res = await fetch(`${API_URL}/recommendations/career`, {
+      headers: { 'Authorization': `Bearer ${userToken}` }
     });
     const { data } = await res.json();
     renderCareerRecs(data);
@@ -121,8 +121,8 @@ async function fetchCareerRecommendations() {
 
 async function fetchCampusRecommendations() {
   try {
-    const res = await fetch(\`\${API_URL}/recommendations/campus\`, {
-      headers: { 'Authorization': \`Bearer \${userToken}\` }
+    const res = await fetch(`${API_URL}/recommendations/campus`, {
+      headers: { 'Authorization': `Bearer ${userToken}` }
     });
     const data = await res.json();
     renderCampusRecs(data);
@@ -135,7 +135,7 @@ async function fetchCampusRecommendations() {
 function renderProfile(user) {
   $('#user-name').text(user.name);
   $('#user-initial').text(user.name.charAt(0));
-  $('#user-major').text(\`\${user.year} • \${user.major}\`);
+  $('#user-major').text(`${user.year} • ${user.major}`);
   
   // Render DNA Canvas
   if (document.getElementById('dna-canvas')) {
@@ -144,58 +144,58 @@ function renderProfile(user) {
 }
 
 function renderCareerRecs(items) {
-  const html = items.map(rec => \`
+  const html = items.map(rec => `
     <div class="rec-item">
       <div style="font-size: 0.75rem; color: var(--accent-secondary); margin-bottom: 0.5rem; text-transform: uppercase;">
-        \${rec.item.type} • \${rec.item.difficulty}
+        ${rec.item.type} • ${rec.item.difficulty}
       </div>
-      <h4 style="margin-bottom: 0.5rem;">\${rec.item.title}</h4>
+      <h4 style="margin-bottom: 0.5rem;">${rec.item.title}</h4>
       <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
-        \${rec.item.category} • \${rec.item.rating} ⭐ (\${rec.item.totalRatings})
+        ${rec.item.category} • ${rec.item.rating} ⭐ (${rec.item.totalRatings})
       </p>
       
       <div>
-        \${rec.item.tags.slice(0,3).map(tag => \`<span class="tag">\${tag}</span>\`).join('')}
+        ${rec.item.tags.slice(0,3).map(tag => `<span class="tag">${tag}</span>`).join('')}
       </div>
       
       <div class="ai-explanation">
         <div>💡</div>
-        <div>\${rec.explanation}</div>
+        <div>${rec.explanation}</div>
       </div>
     </div>
-  \`).join('');
+  `).join('');
   
   $('#career-grid').html(html);
   showLoading(false);
 }
 
 function renderCampusRecs(data) {
-  const clubsHtml = data.clubs.map(rec => \`
+  const clubsHtml = data.clubs.map(rec => `
     <div class="rec-item" style="border-color: var(--accent-secondary)">
-      <h4 style="margin-bottom: 0.5rem;">\${rec.item.name}</h4>
+      <h4 style="margin-bottom: 0.5rem;">${rec.item.name}</h4>
       <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
-        \${rec.item.category} • \${rec.item.memberCount} members
+        ${rec.item.category} • ${rec.item.memberCount} members
       </p>
       <div class="ai-explanation" style="color: var(--accent-secondary)">
         <div>💡</div>
-        <div>\${rec.explanation}</div>
+        <div>${rec.explanation}</div>
       </div>
     </div>
-  \`).join('');
+  `).join('');
   $('#clubs-grid').html(clubsHtml);
 
-  const eventsHtml = data.events.map(rec => \`
+  const eventsHtml = data.events.map(rec => `
     <div class="rec-item" style="border-color: var(--accent-success)">
-      <h4 style="margin-bottom: 0.5rem;">\${rec.item.title}</h4>
+      <h4 style="margin-bottom: 0.5rem;">${rec.item.title}</h4>
       <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
-        \${new Date(rec.item.date).toLocaleDateString()} • \${rec.item.location}
+        ${new Date(rec.item.date).toLocaleDateString()} • ${rec.item.location}
       </p>
       <div class="ai-explanation" style="color: var(--accent-success)">
         <div>💡</div>
-        <div>\${rec.explanation}</div>
+        <div>${rec.explanation}</div>
       </div>
     </div>
-  \`).join('');
+  `).join('');
   $('#events-grid').html(eventsHtml);
 }
 
@@ -206,7 +206,7 @@ function switchTab(tab) {
   
   $('.rec-content').hide();
   if (!loading) {
-    $(\`#content-\${tab}\`).fadeIn();
+    $(`#content-${tab}`).fadeIn();
   }
 }
 
@@ -220,7 +220,7 @@ function showLoading(show) {
     $('#loading').hide();
     // Show active tab
     const activeTab = $('.tab-btn.active').text().includes('Career') ? 'career' : 'campus';
-    $(\`#content-\${activeTab}\`).fadeIn();
+    $(`#content-${activeTab}`).fadeIn();
   }
 }
 
@@ -335,5 +335,23 @@ function drawDNACanvas(dna) {
     ctx.beginPath();
     ctx.arc(x, y, 4, 0, Math.PI * 2);
     ctx.fill();
+  }
+}
+
+// ─── BEHAVIOR LOGGING ─────────────────────────────
+async function logAction(itemId, itemType, action) {
+  if (!userToken) return;
+  try {
+    await fetch(`${API_URL}/interactions`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${userToken}`
+      },
+      body: JSON.stringify({ itemId, itemType, action })
+    });
+    // Optional: show a small toast or visual feedback
+  } catch(e) {
+    console.error('Failed to log action', e);
   }
 }
