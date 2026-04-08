@@ -1,152 +1,191 @@
-# 🎓 CampusIQ AI — Smart Campus & Career Companion
+# CampusIQ AI
 
-> An AI-powered recommendation system that helps college students maximize campus life AND career readiness — all from one intelligent dashboard that learns from their behavior.
+**An AI-powered web app that acts as a personal guide for college students — recommending courses, clubs, events, and career resources based on how they actually behave on the platform.**
 
-![Node.js](https://img.shields.io/badge/Node.js-v24-green?logo=node.js)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?logo=mongodb)
-![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-AI-orange?logo=tensorflow)
+![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-v5-000000?logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)
+![JWT](https://img.shields.io/badge/Auth-JWT-F7DF1E?logo=jsonwebtokens&logoColor=black)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-## 🧠 What is CampusIQ AI?
+---
 
-CampusIQ AI is a **dual-brain recommendation system** that analyzes student behavior to provide personalized suggestions across two domains:
+## What this project is about
 
-### 🏫 Campus Brain
-- **Clubs** to join based on your interests
-- **Events & Hackathons** you'd love attending
-- **Study Groups** matched by complementary skills
-- **Study Spots** based on your noise preference
-- **Cafeteria Meals** by nutrition goals & budget
+I built CampusIQ as my submission for the AI Web Development course. The core idea is simple: college students waste a lot of time figuring out what to learn, which clubs to join, or what events matter for their career. I wanted to build something that solves this automatically — not with a static list, but with real AI that adapts to each person.
 
-### 🎯 Career Brain
-- **Courses** to take based on skill gaps vs job market demand
-- **Products** (books, tools, software) to boost your learning
-- **Projects** to build next — maximizing employability
-- **Tech Trends** — what's rising, what's declining
-- **Open Source** repos to contribute to
+The app tracks how a student interacts with the platform (what they click, enroll in, bookmark, or rate) and uses that data to build a personal preference profile. From there, it recommends the right content at the right time, and explains why.
 
-## ✨ Unique Features
+---
 
-- **🧬 Student DNA Profile** — 8-dimensional personality constellation visualization
-- **🤖 AI Mentor Chatbot** — Ask "What should I learn next?" and get explained answers
-- **📊 Job Market Pulse** — Live skill demand comparison
-- **🌊 Mood-Adaptive UI** — Interface shifts colors based on your browsing pattern
-- **🔮 Explainable AI** — Every recommendation shows WHY it was suggested
+## Screenshots
 
-## 🛠️ Tech Stack
+**Landing Page**
+![Landing Page](screenshots/01_landing_page.png)
 
-| Technology | Usage |
+**Sign Up**
+![Registration](screenshots/02_registration_form.png)
+
+**Student Dashboard — Learning DNA + Recommendations**
+![Dashboard](screenshots/03_dashboard.png)
+
+**Explore Page — Browse Everything**
+![Explore](screenshots/04_explore_page.png)
+
+**Live Search in Action**
+![Search](screenshots/05_explore_search_python.png)
+
+**AI Mentor Chatbot**
+![Chatbot](screenshots/06_chatbot_ai_response.png)
+
+**DNA Dimension Breakdown**
+![DNA View](screenshots/07_dashboard_dna_view.png)
+
+> A full video walkthrough is available at `screenshots/recordings/campusiq_full_demo.webp`
+
+---
+
+## How the AI works
+
+The recommendation engine lives in `server/ai-service.js` and does three things:
+
+**1. Builds a user vector from behavior**
+Every course, club, and event is represented as a 10-dimensional feature vector across categories like AI/ML, Web Dev, Cloud, Design, etc. When a student enrolls, bookmarks, or rates something, the system updates their personal preference vector accordingly — enrollments carry more weight than just clicks.
+
+**2. Scores everything using cosine similarity**
+When you load the dashboard, the engine computes the cosine similarity between your preference vector and every item in the database. That gives a content-based relevance score.
+
+**3. Combines it with popularity and quality signals**
+The final score is a weighted mix:
+- 60% — Content similarity (matches your interests)
+- 20% — Popularity (enrollment count, trending flag)
+- 20% — Quality (average rating from other students)
+
+There are two separate recommendation pipelines — one for courses and products (Career Brain), and one for clubs and events (Campus Brain).
+
+**Learning DNA** is the 8-dimensional profile stored per student: Curiosity, Technical Depth, Creativity, Leadership, Networking, Consistency, Career Focus, and Adaptability. It gets updated based on interaction patterns and is visualized as a radar chart on the dashboard.
+
+The chatbot uses regex-based intent detection against real MongoDB queries — no external API, just the live database and the recommendation engine.
+
+---
+
+## Tech stack
+
+| Layer | What I used |
 |---|---|
-| HTML5 / CSS3 | Semantic UI with glassmorphism design |
-| JavaScript / jQuery | Interactivity, AJAX, DOM manipulation |
-| JSON | API data exchange format |
-| Node.js / Express.js | Backend REST API |
-| MongoDB Atlas | Cloud database |
-| TensorFlow.js | Client-side AI inference |
-| Cosine Similarity | Content-based recommendation |
-| Sentiment Analysis | Review processing |
+| Frontend | HTML, CSS, Vanilla JavaScript |
+| Backend | Node.js, Express.js v5 |
+| Database | MongoDB with Mongoose ODM |
+| Auth | JWT (jsonwebtoken) + bcryptjs for password hashing |
+| AI Engine | Custom JS — cosine similarity, hybrid scoring |
+| Sentiment Analysis | AFINN lexicon (built-in, no external API) |
+| Dev tooling | nodemon, dotenv |
 
-## 📁 Project Structure
+No frameworks on the frontend — just clean HTML/CSS/JS. I wanted to keep it lean and understand everything that was happening.
+
+---
+
+## Project structure
 
 ```
-├── public/                  # Frontend
-│   ├── index.html           # Landing page
-│   ├── dashboard.html       # Student dashboard
-│   ├── explore.html         # Browse recommendations
-│   ├── css/style.css        # All styles
-│   ├── js/app.js            # Main app logic
-│   ├── js/ai-engine.js      # Client-side AI
-│   └── js/chatbot.js        # AI chatbot
-├── server/                  # Backend
-│   ├── server.js            # Express app
-│   ├── models.js            # MongoDB schemas
-│   ├── routes.js            # API routes
-│   ├── ai-service.js        # AI recommendation engine
-│   └── seed.js              # Database seeder
+campusiq-ai/
+├── public/
+│   ├── index.html          # Landing page + auth modals
+│   ├── dashboard.html      # Student dashboard
+│   ├── explore.html        # Browse courses, clubs, events
+│   ├── css/
+│   │   └── style.css       # All styles (dark gold theme)
+│   └── js/
+│       ├── app.js          # Main frontend logic, API calls, auth
+│       └── chatbot.js      # Chat widget UI and messaging
+│
+├── server/
+│   ├── server.js           # Express entry point, DB connection
+│   ├── routes.js           # All REST API routes
+│   ├── models.js           # Mongoose schemas (Student, Course, Club, Event, Interaction, Review)
+│   ├── ai-service.js       # Recommendation engine + sentiment analysis
+│   └── seed.js             # Seeds the database with sample data
+│
+├── screenshots/            # App screenshots and walkthrough recording
+├── .env.example
 ├── package.json
 └── README.md
 ```
 
-## 🚀 Getting Started
+---
 
-### Prerequisites
-- Node.js v18+
-- MongoDB Atlas account (free tier)
+## Running it locally
 
-### Installation
+You'll need Node.js (v18 or higher) and a MongoDB instance — either local or MongoDB Atlas (free tier works fine).
 
 ```bash
-# Clone the repository
+# Clone the repo
 git clone https://github.com/VSRAJHAVEL/campusiq-ai.git
 cd campusiq-ai
 
 # Install dependencies
 npm install
 
-# Create environment file
+# Set up your environment
 cp .env.example .env
-# Edit .env with your MongoDB Atlas URI and JWT secret
+# Open .env and add your MongoDB URI and a JWT secret
+```
 
-# Seed the database
+Your `.env` should look like this:
+
+```env
+MONGO_URI=mongodb://localhost:27017/campusiq
+JWT_SECRET=your_secret_key_here
+PORT=3000
+```
+
+```bash
+# Seed the database with courses, clubs, events
 npm run seed
 
-# Start development server
+# Start the development server
 npm run dev
 ```
 
-Visit `http://localhost:3000` in your browser.
-
-## 📡 API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | /api/auth/register | Register new student |
-| POST | /api/auth/login | Login & get JWT |
-| GET | /api/courses | Browse courses |
-| GET | /api/clubs | Browse clubs |
-| GET | /api/events | Browse events |
-| GET | /api/recommendations/campus | AI campus recommendations |
-| GET | /api/recommendations/career | AI career recommendations |
-| POST | /api/interactions | Log user behavior |
-
-## 🧪 AI Algorithm
-
-CampusIQ uses a **hybrid recommendation engine**:
-- **Content-Based Filtering** (60%) — Cosine similarity between item features and user preferences
-- **Collaborative Filtering** (30%) — User-user similarity from interaction patterns
-- **Trending Signals** (10%) — Popularity and recency weighting
-
-## 📸 Screenshots
-
-### Landing Page
-![Landing Page](screenshots/01_landing_page.png)
-
-### Registration
-![Registration Form](screenshots/02_registration_form.png)
-
-### Dashboard — Learning DNA & AI Recommendations
-![Dashboard](screenshots/03_dashboard.png)
-
-### Explore — Browse Courses, Clubs & Events
-![Explore Page](screenshots/04_explore_page.png)
-
-### Explore — Live Search (Python Courses)
-![Search Results](screenshots/05_explore_search_python.png)
-
-### AI Mentor Chatbot Response
-![Chatbot](screenshots/06_chatbot_ai_response.png)
-
-### Dashboard — Full DNA View
-![DNA Dashboard](screenshots/07_dashboard_dna_view.png)
-
-> 🎬 Full walkthrough recording available in `screenshots/recordings/campusiq_full_demo.webp`
+Open `http://localhost:3000` and register an account to get started.
 
 ---
 
-## 📄 License
+## API overview
 
-MIT License — feel free to use and modify.
+All routes are under `/api`. Protected routes require a `Bearer <token>` in the `Authorization` header.
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| POST | `/api/auth/register` | No | Create a new student account |
+| POST | `/api/auth/login` | No | Login and receive a JWT |
+| GET | `/api/auth/me` | Yes | Get current user profile |
+| GET | `/api/courses` | Optional | List courses (supports filter, search, sort) |
+| GET | `/api/courses/:id` | Optional | Single course with reviews |
+| GET | `/api/clubs` | Optional | List clubs |
+| GET | `/api/events` | Optional | List events |
+| GET | `/api/recommendations/career` | Yes | AI-generated course/product picks |
+| GET | `/api/recommendations/campus` | Yes | AI-generated club/event picks |
+| POST | `/api/interactions` | Yes | Log a user action (view, enroll, bookmark, rate) |
+| GET | `/api/interactions/history` | Yes | Get interaction history |
+| PUT | `/api/users/preferences` | Yes | Update interests, goals, learning style |
+| POST | `/api/reviews` | Yes | Submit a review for a course |
+| POST | `/api/chat` | Optional | Chat with the AI Mentor |
 
 ---
 
-Built with ❤️ for the AIWD Course Project
+## What I learned building this
+
+The hardest part was getting the recommendation engine right. Cosine similarity on its own gives decent results, but it completely ignores whether something is actually good or popular. The hybrid scoring approach (blending content similarity, popularity, and rating) made a noticeable difference in recommendation quality.
+
+The Learning DNA radar chart was also more complex than expected — mapping raw interaction data onto 8 behavioral dimensions and keeping it updated in real time took a few iterations to get right.
+
+---
+
+## License
+
+MIT — use it, fork it, build on it.
+
+---
+
+*Built by VSRAJHAVEL for the AIWD Course Project, 2026*
