@@ -19,3 +19,6 @@ npm-debug.log*
 # Build
 dist/
 build/
+
+# Stray files
+mermaid-diagram.png

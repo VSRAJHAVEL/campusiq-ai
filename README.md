@@ -116,6 +116,33 @@ CampusIQ uses a **hybrid recommendation engine**:
 - **Collaborative Filtering** (30%) — User-user similarity from interaction patterns
 - **Trending Signals** (10%) — Popularity and recency weighting
 
+## 📸 Screenshots
+
+### Landing Page
+![Landing Page](screenshots/01_landing_page.png)
+
+### Registration
+![Registration Form](screenshots/02_registration_form.png)
+
+### Dashboard — Learning DNA & AI Recommendations
+![Dashboard](screenshots/03_dashboard.png)
+
+### Explore — Browse Courses, Clubs & Events
+![Explore Page](screenshots/04_explore_page.png)
+
+### Explore — Live Search (Python Courses)
+![Search Results](screenshots/05_explore_search_python.png)
+
+### AI Mentor Chatbot Response
+![Chatbot](screenshots/06_chatbot_ai_response.png)
+
+### Dashboard — Full DNA View
+![DNA Dashboard](screenshots/07_dashboard_dna_view.png)
+
+> 🎬 Full walkthrough recording available in `screenshots/recordings/campusiq_full_demo.webp`
+
+---
+
 ## 📄 License
 
 MIT License — feel free to use and modify.
