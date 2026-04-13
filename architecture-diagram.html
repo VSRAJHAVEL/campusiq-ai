@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusIQ AI - System Architecture</title>
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            width: 1000px;
+            height: 650px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .title-group {
+            position: absolute;
+            top: 30px;
+            left: 50px;
+        }
+
+        .title-group h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #111827;
+            font-weight: 700;
+        }
+
+        .title-group p {
+            margin: 4px 0 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* --- SVG Connectors --- */
+        .lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* --- Service Boxes --- */
+        .box {
+            position: absolute;
+            width: 220px;
+            padding: 20px;
+            background: #ffffff;
+            border: 2px solid #d1d5db;
+            border-radius: 10px;
+            z-index: 2;
+        }
+
+        .box-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #374151;
+            margin-bottom: 15px;
+            display: block;
+            text-align: center;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 8px;
+        }
+
+        .item {
+            font-size: 13px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            background: #f9fafb;
+            border-radius: 6px;
+            color: #4b5563;
+            border: 1px solid #f3f4f6;
+        }
+
+        /* Colors */
+        .client { border-color: #3b82f6; }
+        .server { border-color: #10b981; }
+        .ai     { border-color: #8b5cf6; }
+        .db     { border-color: #f59e0b; }
+
+        /* Positioning */
+        .pos1 { top: 250px; left: 50px; }
+        .pos2 { top: 250px; left: 380px; }
+        .pos3 { top: 100px; left: 710px; }
+        .pos4 { top: 400px; left: 710px; }
+
+        /* Arrow Labels */
+        .pill {
+            position: absolute;
+            font-size: 11px;
+            font-weight: 600;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: #6b7280;
+            z-index: 5;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="title-group">
+            <h1>CampusIQ System Map</h1>
+            <p>Simplified Implementation Architecture</p>
+        </div>
+
+        <svg class="lines">
+            <defs>
+                <marker id="head" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af" />
+                </marker>
+            </defs>
+
+            <!-- Connections -->
+            <path d="M 270 330 L 380 330" stroke="#9ca3af" stroke-width="2" fill="none" marker-end="url(#head)" />
+            <path d="M 600 310 L 710 200" stroke="#9ca3af" stroke-width="2" fill="none" marker-end="url(#head)" />
+            <path d="M 600 350 L 710 460" stroke="#9ca3af" stroke-width="2" fill="none" marker-end="url(#head)" />
+            <path d="M 820 280 L 820 400" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#head)" />
+        </svg>
+
+        <!-- Labels -->
+        <div class="pill" style="top: 318px; left: 285px;">API Requests</div>
+        <div class="pill" style="top: 240px; left: 615px;">Analyze Info</div>
+        <div class="pill" style="top: 405px; left: 615px;">Store Data</div>
+
+        <!-- Frontend -->
+        <div class="box client pos1">
+            <span class="box-title">User Interface</span>
+            <div class="item">Web Pages (HTML/CSS)</div>
+            <div class="item">User Actions (app.js)</div>
+            <div class="item">AI Chatbot UI</div>
+        </div>
+
+        <!-- Backend -->
+        <div class="box server pos2">
+            <span class="box-title">Backend Server</span>
+            <div class="item">API Routes (routes.js)</div>
+            <div class="item">User Login (Auth)</div>
+            <div class="item">Data Processing</div>
+        </div>
+
+        <!-- AI -->
+        <div class="box ai pos3">
+            <span class="box-title">AI Engine</span>
+            <div class="item">Interest Matching</div>
+            <div class="item">Recommendation Logic</div>
+            <div class="item">Feedback Analysis</div>
+        </div>
+
+        <!-- Database -->
+        <div class="box db pos4">
+            <span class="box-title">Database</span>
+            <div class="item">User Profiles</div>
+            <div class="item">Campus Data</div>
+            <div class="item">Activity Logs</div>
+        </div>
+
+    </div>
+
+</body>
+</html>
