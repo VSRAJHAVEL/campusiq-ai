@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | CampusIQ AI</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <!-- jQuery first -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    /* ── Dashboard Layout ──────────────────────── */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 90px auto 60px;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2rem;
+    }
+    
+    .dna-panel, .rec-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: 0;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .dna-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
+    }
+    
+    #dna-canvas {
+      width: 100%;
+      max-width: 280px;
+      height: 280px;
+      margin: 1.5rem 0;
+      display: block;
+    }
+    
+    /* ── Tabs ──────────────────────────────────── */
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      padding: 0.8rem 1.5rem;
+      transition: all var(--trans-fast);
+    }
+    
+    .tab-btn.active {
+      color: var(--accent-primary);
+      border-bottom-color: var(--accent-primary);
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--text-main);
+    }
+    
+    /* ── Recommendation Cards ──────────────────── */
+    .rec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .rec-item {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(197,160,89,0.15);
+      padding: 1.5rem;
+      transition: all var(--trans-fast);
+      position: relative;
+    }
+    
+    .rec-item:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-3px);
+      background: rgba(197,160,89,0.04);
+    }
+
+    .ai-explanation {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(197,160,89,0.2);
+      font-size: 0.82rem;
+      color: var(--accent-primary);
+    }
+    
+    .tag {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.7rem;
+      border: 1px solid rgba(197,160,89,0.25);
+      background: rgba(197,160,89,0.05);
+      display: inline-block;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Preferences Panel ─────────────────────── */
+    .pref-form label {
+      display: block;
+      color: #888;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+      margin-top: 1rem;
+    }
+    .pref-form input,
+    .pref-form select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(197,160,89,0.25);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .pref-form input:focus,
+    .pref-form select:focus {
+      border-color: rgba(197,160,89,0.7);
+    }
+    .pref-form select option {
+      background: #111;
+    }
+
+    /* ── DNA Stat Bars ─────────────────────────── */
+    .dna-stat-bar {
+      width: 100%;
+      margin-bottom: 0.8rem;
+      text-align: left;
+    }
+    .dna-stat-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 0.3rem;
+    }
+    .dna-bar-track {
+      height: 3px;
+      background: rgba(197,160,89,0.1);
+      width: 100%;
+    }
+    .dna-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      transition: width 0.8s ease;
+    }
+
+    /* ── Login Overlay (fallback) ──────────────── */
+    #login-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--bg-dark);
+      z-index: 1001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      background: #111;
+      border: 1px solid rgba(197,160,89,0.35);
+      padding: 3rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+      #dna-canvas {
+        max-width: 240px;
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <span style="color:#fff;font-weight:400;margin-right:8px;font-family:'Montserrat',sans-serif;font-size:0.9rem;">C I Q</span>
+        CampusIQ
+      </a>
+      <div class="nav-links">
+        <a href="/explore">Explore</a>
+        <a href="/dashboard" style="color: var(--accent-primary);">Dashboard</a>
+
+        <!-- Not logged in -->
+        <a href="#" id="nav-signin-btn" class="btn btn-outline" style="padding:0.5rem 1.2rem;">Sign In</a>
+        <a href="#" id="nav-register-btn" class="btn btn-primary" style="padding:0.5rem 1.2rem;">Register</a>
+
+        <!-- Logged in -->
+        <div id="nav-logged-in" style="display:none;align-items:center;gap:1.5rem;">
+          <a href="#" class="logout-action" style="color:var(--text-muted);font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;">Sign Out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Login Overlay (shown if NOT authenticated, as fallback) -->
+  <div id="login-overlay">
+    <div class="login-card">
+      <h2 style="font-family:'Playfair Display',serif;color:var(--accent-primary);margin-bottom:0.5rem;">Welcome Back</h2>
+      <p style="color:#888;font-size:0.85rem;margin-bottom:2rem;">Sign in to access your AI-powered profile.</p>
+      
+      <div style="display:flex;gap:0;margin-bottom:2rem;border-bottom:1px solid rgba(197,160,89,0.2);">
+        <button id="lo-tab-signin" onclick="loSwitchTab('signin')" style="flex:1;padding:0.8rem;background:none;border:none;border-bottom:2px solid var(--accent-primary);color:var(--accent-primary);font-family:'Montserrat',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Sign In</button>
+        <button id="lo-tab-register" onclick="loSwitchTab('register')" style="flex:1;padding:0.8rem;background:none;border:none;border-bottom:2px solid transparent;color:#888;font-family:'Montserrat',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">Register</button>
+      </div>
+
+      <!-- Sign In Form -->
+      <div id="lo-form-signin">
+        <form id="login-overlay-form" style="display:flex;flex-direction:column;gap:1rem;">
+          <div>
+            <label style="display:block;color:#888;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;">Email</label>
+            <input type="email" id="lo-email" placeholder="you@university.edu" required
+              style="width:100%;padding:0.9rem 1rem;background:rgba(0,0,0,0.5);border:1px solid rgba(197,160,89,0.25);color:#fff;font-family:'Montserrat',sans-serif;font-size:0.9rem;outline:none;"
+              onfocus="this.style.borderColor='rgba(197,160,89,0.7)'" onblur="this.style.borderColor='rgba(197,160,89,0.25)'">
+          </div>
+          <div>
+            <label style="display:block;color:#888;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;">Password</label>
+            <input type="password" id="lo-password" placeholder="••••••••" required
+              style="width:100%;padding:0.9rem 1rem;background:rgba(0,0,0,0.5);border:1px solid rgba(197,160,89,0.25);color:#fff;font-family:'Montserrat',sans-serif;font-size:0.9rem;outline:none;"
+              onfocus="this.style.borderColor='rgba(197,160,89,0.7)'" onblur="this.style.borderColor='rgba(197,160,89,0.25)'">
+          </div>
+          <div id="lo-error" style="display:none;color:#e53e3e;font-size:0.8rem;padding:0.5rem;border-left:2px solid #e53e3e;"></div>
+          <button type="submit" id="lo-btn" class="btn btn-primary" style="margin-top:0.5rem;width:100%;">Sign In</button>
+        </form>
+        <p style="margin-top:1.5rem;text-align:center;color:#888;font-size:0.8rem;">
+          New here? <a href="#" id="lo-switch-register" onclick="loSwitchTab('register');return false;" style="color:var(--accent-primary);text-decoration:underline;">Create an account</a>
+        </p>
+      </div>
+
+      <!-- Register Form (in overlay) -->
+      <div id="lo-form-register" style="display:none;">
+        <form id="lo-register-form" style="display:flex;flex-direction:column;gap:0.8rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+            <div>
+              <label style="display:block;color:#888;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Full Name</label>
+              <input type="text" id="lo-reg-name" placeholder="Alex Kumar" required
+                style="width:100%;padding:0.8rem 0.8rem;background:rgba(0,0,0,0.5);border:1px solid rgba(197,160,89,0.25);color:#fff;font-family:'Montserrat',sans-serif;font-size:0.85rem;outline:none;">
+            </div>
+            <div>
+              <label style="display:block;color:#888;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Year</label>
+              <select id="lo-reg-year"
+                style="width:100%;padding:0.8rem 0.8rem;background:#111;border:1px solid rgba(197,160,89,0.25);color:#fff;font-family:'Montserrat',sans-serif;font-size:0.85rem;outline:none;">
+                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>Graduate</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;color:#888;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Email</label>
+            <input type="email" id="lo-reg-email" placeholder="you@university.edu" required
+              style="width:100%;padding:0.8rem 1rem;background:rgba(0,0,0,0.5);border:1px solid rgba(197,160,89,0.25);color:#fff;font-family:'Montserrat',sans-serif;font-size:0.85rem;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;color:#888;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Major</label>
+            <input type="text" id="lo-reg-major" placeholder="Computer Science" required
+              style="width:100%;padding:0.8rem 1rem;background:rgba(0,0,0,0.5);border:1px solid rgba(197,160,89,0.25);color:#fff;font-family:'Montserrat',sans-serif;font-size:0.85rem;outline:none;">
+          </div>
+          <div>
+            <label style="display:block;color:#888;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">Password</label>
+            <input type="password" id="lo-reg-password" placeholder="min 6 chars" required minlength="6"
+              style="width:100%;padding:0.8rem 1rem;background:rgba(0,0,0,0.5);border:1px solid rgba(197,160,89,0.25);color:#fff;font-family:'Montserrat',sans-serif;font-size:0.85rem;outline:none;">
+          </div>
+          <div id="lo-reg-error" style="display:none;color:#e53e3e;font-size:0.8rem;padding:0.5rem;border-left:2px solid #e53e3e;"></div>
+          <button type="submit" id="lo-reg-btn" class="btn btn-primary" style="margin-top:0.5rem;width:100%;">Create Account</button>
+        </form>
+        <p style="margin-top:1rem;text-align:center;color:#888;font-size:0.8rem;">
+          Have an account? <a href="#" onclick="loSwitchTab('signin');return false;" style="color:var(--accent-primary);text-decoration:underline;">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <div class="dashboard-container">
+    <!-- Left Panel: Profile & DNA -->
+    <aside class="dna-panel">
+      <div class="avatar-placeholder" id="user-initial">?</div>
+      <h2 id="user-name" style="font-size:1.4rem;color:#fff;margin-bottom:0.3rem;">Loading...</h2>
+      <p id="user-major" style="color:var(--text-muted);font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem;">...</p>
+
+      <!-- DNA Canvas -->
+      <div style="width:100%;text-align:left;margin-bottom:1.5rem;">
+        <h4 style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent-primary);margin-bottom:0.3rem;">Learning DNA</h4>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem;">Your 8-dimensional behavioral fingerprint</p>
+        <canvas id="dna-canvas"></canvas>
+      </div>
+
+      <!-- DNA stat bars -->
+      <div id="dna-bars" style="width:100%;text-align:left;"></div>
+
+      <!-- Preferences Panel -->
+      <div style="width:100%;margin-top:2rem;text-align:left;">
+        <h4 style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent-primary);margin-bottom:1rem;">Your Preferences</h4>
+        <div class="pref-form">
+          <label>Interests (comma-separated)</label>
+          <input type="text" id="pref-interests" placeholder="AI, Web Dev, Data Science">
+          
+          <label>Career Goal</label>
+          <input type="text" id="pref-career" placeholder="Full Stack Developer">
+          
+          <label>Learning Style</label>
+          <select id="pref-style">
+            <option value="hands-on">Hands-On / Project Based</option>
+            <option value="video">Video Lectures</option>
+            <option value="reading">Reading / Docs</option>
+            <option value="visual">Visual / Infographics</option>
+          </select>
+          
+          <button class="btn btn-outline" onclick="savePreferences()" style="width:100%;margin-top:1.2rem;font-size:0.8rem;">
+            Save & Refresh Recommendations
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Panel: AI Recommendations -->
+    <main class="rec-panel">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('career')">Career Path</button>
+        <button class="tab-btn" onclick="switchTab('campus')">Campus Life</button>
+        <button class="tab-btn" onclick="switchTab('prefs')">Settings</button>
+      </div>
+
+      <div id="loading" style="text-align:center;padding:5rem 2rem;">
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--accent-primary);animation:pulse 1.5s infinite;">Processing Algorithms...</div>
+        <p style="color:var(--text-muted);margin-top:1rem;font-size:0.85rem;">Analyzing your Learning DNA</p>
+      </div>
+
+      <!-- Career Recommendations -->
+      <div id="content-career" class="rec-content" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+          <h3 style="font-family:'Playfair Display',serif;">Top Course & Product Picks</h3>
+          <button onclick="fetchCareerRecommendations()" class="btn btn-outline" style="font-size:0.75rem;padding:0.4rem 1rem;">↻ Refresh</button>
+        </div>
+        <div class="rec-grid" id="career-grid"></div>
+      </div>
+
+      <!-- Campus Recommendations -->
+      <div id="content-campus" class="rec-content" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+          <h3 style="font-family:'Playfair Display',serif;">Recommended Clubs</h3>
+          <button onclick="fetchCampusRecommendations()" class="btn btn-outline" style="font-size:0.75rem;padding:0.4rem 1rem;">↻ Refresh</button>
+        </div>
+        <div class="rec-grid" id="clubs-grid" style="margin-bottom:3rem;"></div>
+        
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;">Upcoming Events For You</h3>
+        <div class="rec-grid" id="events-grid"></div>
+      </div>
+
+      <!-- Settings / Preferences (duplicate on right side for larger screen) -->
+      <div id="content-prefs" class="rec-content" style="display:none;">
+        <h3 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;">Profile Settings</h3>
+        <div style="max-width:500px;">
+          <div class="pref-form">
+            <label>Interests (comma-separated)</label>
+            <input type="text" id="pref-interests-2" placeholder="AI, Web Dev, Data Science">
+            
+            <label>Career Goal</label>
+            <input type="text" id="pref-career-2" placeholder="Full Stack Developer">
+            
+            <label>Learning Style</label>
+            <select id="pref-style-2">
+              <option value="hands-on">Hands-On / Project Based</option>
+              <option value="video">Video Lectures</option>
+              <option value="reading">Reading / Docs</option>
+              <option value="visual">Visual / Infographics</option>
+            </select>
+          </div>
+          
+          <button class="btn btn-primary" onclick="savePreferencesAll()" style="margin-top:1.5rem;width:100%;">
+            Save Preferences
+          </button>
+
+          <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(197,160,89,0.15);">
+            <h4 style="margin-bottom:1rem;color:#888;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;">Account Actions</h4>
+            <button class="btn btn-outline logout-action" style="width:100%;border-color:rgba(200,50,50,0.4);color:#e53e3e;">Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    // Tab switching including prefs tab
+    const origSwitchTab = window.switchTab;
+    window.switchTab = function(tab) {
+      $('.tab-btn').removeClass('active');
+      const tabs = { career: 0, campus: 1, prefs: 2 };
+      $($('.tab-btn')[tabs[tab] !== undefined ? tabs[tab] : 0]).addClass('active');
+      $('.rec-content').hide();
+      if (!loading) {
+        $(`#content-${tab}`).fadeIn();
+      }
+    };
+
+    // Overlay tab switcher
+    function loSwitchTab(tab) {
+      const isSignin = tab === 'signin';
+      $('#lo-form-signin').toggle(isSignin);
+      $('#lo-form-register').toggle(!isSignin);
+      $('#lo-tab-signin').css({ 'color': isSignin ? 'var(--accent-primary)' : '#888', 'border-bottom-color': isSignin ? 'var(--accent-primary)' : 'transparent' });
+      $('#lo-tab-register').css({ 'color': !isSignin ? 'var(--accent-primary)' : '#888', 'border-bottom-color': !isSignin ? 'var(--accent-primary)' : 'transparent' });
+    }
+
+    // Sync both pref forms
+    function savePreferencesAll() {
+      // Sync from the prefs tab fields to the left-panel fields (app.js reads from #pref-*)
+      $('#pref-interests').val($('#pref-interests-2').val());
+      $('#pref-career').val($('#pref-career-2').val());
+      $('#pref-style').val($('#pref-style-2').val());
+      savePreferences();
+    }
+
+    // Register in overlay
+    $(document).ready(function() {
+      $('#lo-register-form').submit(async function(e) {
+        e.preventDefault();
+        const name     = $('#lo-reg-name').val().trim();
+        const email    = $('#lo-reg-email').val().trim();
+        const password = $('#lo-reg-password').val();
+        const major    = $('#lo-reg-major').val().trim();
+        const year     = $('#lo-reg-year').val();
+
+        if (!name || !email || !password || !major) {
+          $('#lo-reg-error').text('Please fill in all fields.').show(); return;
+        }
+        if (password.length < 6) {
+          $('#lo-reg-error').text('Password must be at least 6 characters.').show(); return;
+        }
+
+        $('#lo-reg-btn').text('Creating...');
+        $('#lo-reg-error').hide();
+
+        try {
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, major, year })
+          });
+          const data = await res.json();
+          if (!res.ok) { $('#lo-reg-error').text(data.error || 'Registration failed.').show(); $('#lo-reg-btn').text('Create Account'); return; }
+          if (data.token) {
+            localStorage.setItem('campusiq_token', data.token);
+            userToken = data.token;
+            $('#login-overlay').fadeOut();
+            showToast('Account created! Welcome to CampusIQ ✨', 'success');
+            updateNavState();
+            fetchUserProfile();
+          }
+        } catch(err) {
+          $('#lo-reg-error').text('Connection error. Is the server running?').show();
+          $('#lo-reg-btn').text('Create Account');
+        }
+      });
+
+      // Sync pref forms when user data loads
+      $(document).on('profileLoaded', function() {
+        if (userData && userData.preferences) {
+          $('#pref-interests-2').val( (userData.preferences.interests||[]).join(', ') );
+          $('#pref-career-2').val( userData.preferences.careerGoal || '' );
+          $('#pref-style-2').val( userData.preferences.learningStyle || 'hands-on' );
+        }
+      });
+    });
+
+    // DNA stat bars renderer (called after renderProfile)
+    const origRenderProfile = window.renderProfile;
+    window.renderProfile = function(user) {
+      origRenderProfile && origRenderProfile(user);
+      renderDNABars(user.studentDNA || {});
+      // Sync pref settings tab
+      if (user.preferences) {
+        $('#pref-interests-2').val( (user.preferences.interests||[]).join(', ') );
+        $('#pref-career-2').val( user.preferences.careerGoal || '' );
+        $('#pref-style-2').val( user.preferences.learningStyle || 'hands-on' );
+      }
+    };
+
+    function renderDNABars(dna) {
+      const dims = [
+        { label: 'Curiosity',       val: dna.curiosity      || 50 },
+        { label: 'Technical Depth', val: dna.technicalDepth || 70 },
+        { label: 'Creativity',      val: dna.creativity     || 65 },
+        { label: 'Leadership',      val: dna.leadership     || 40 },
+        { label: 'Networking',      val: dna.networking     || 60 },
+        { label: 'Consistency',     val: dna.consistency    || 80 },
+        { label: 'Career Focus',    val: dna.careerFocus    || 85 },
+        { label: 'Adaptability',    val: dna.adaptability   || 60 }
+      ];
+
+      const html = dims.map(d => `
+        <div class="dna-stat-bar">
+          <div class="dna-stat-label">
+            <span>${d.label}</span>
+            <span style="color:var(--accent-primary);">${d.val}%</span>
+          </div>
+          <div class="dna-bar-track">
+            <div class="dna-bar-fill" style="width:${d.val}%"></div>
+          </div>
+        </div>
+      `).join('');
+
+      $('#dna-bars').html(html);
+    }
+  </script>
+  <script src="/js/chatbot.js"></script>
+</body>
+</html>
