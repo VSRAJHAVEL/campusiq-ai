@@ -247,7 +247,7 @@ function openAuthModal(mode = 'login') {
           closeAuthModal();
           showToast('Welcome back! Loading your dashboard...', 'success');
           setTimeout(() => {
-            window.location.href = '/dashboard';
+            window.location.href = './dashboard.html';
           }, 800);
         }
       } catch (err) {
@@ -314,7 +314,7 @@ function openAuthModal(mode = 'login') {
           closeAuthModal();
           showToast('Account created! Welcome to CampusIQ ✨', 'success');
           setTimeout(() => {
-            window.location.href = '/dashboard';
+            window.location.href = './dashboard.html';
           }, 800);
         }
       } catch (err) {
@@ -373,7 +373,7 @@ $(document).ready(function() {
   } else {
     // Redirect protected pages to index with auth modal
     if (window.location.pathname.includes('explore')) {
-      window.location.href = '/?auth=1';
+      window.location.href = './index.html?auth=1';
       return;
     }
     if (window.location.pathname.includes('dashboard')) {
@@ -459,7 +459,7 @@ $(document).ready(function() {
     userToken = null;
     userData = null;
     showToast('Signed out successfully.', 'info');
-    setTimeout(() => { window.location.href = '/'; }, 600);
+    setTimeout(() => { window.location.href = './index.html'; }, 600);
   });
 
 });
@@ -488,7 +488,7 @@ async function fetchUserProfile() {
         updateNavState();
 
         if (window.location.pathname.includes('explore')) {
-          window.location.href = '/';
+          window.location.href = './index.html';
         } else if (window.location.pathname.includes('dashboard')) {
           $('#login-overlay').css('display', 'flex');
         }
