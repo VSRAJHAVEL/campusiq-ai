@@ -188,4 +188,4 @@ MIT — use it, fork it, build on it.
 
 ---
 
-*Built by VSRAJHAVEL for the AIWD Course Project, 2026*
+*Built by VSRAJHAVEL*
